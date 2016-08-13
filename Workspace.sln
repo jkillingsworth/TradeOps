@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GenerateReports", "src\GenerateReports\GenerateReports.fsproj", "{7472A7E3-716A-4095-B6E6-2BBAE7DC541D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{8D5E810E-B411-4010-B628-A83644FAF6ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Quotes", "Quotes", "{B00B4453-CDD8-4F2B-9F88-4742394D30E6}"
+	ProjectSection(SolutionItems) = preProject
+		sql\Quotes\SelectHolidays.sql = sql\Quotes\SelectHolidays.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Trades", "Trades", "{D177ACE8-EBF4-4719-A9D5-6A0804950759}"
+	ProjectSection(SolutionItems) = preProject
+		sql\Trades\SelectStartDate.sql = sql\Trades\SelectStartDate.sql
+		sql\Trades\SelectTransactionsDivid.sql = sql\Trades\SelectTransactionsDivid.sql
+		sql\Trades\SelectTransactionsSplit.sql = sql\Trades\SelectTransactionsSplit.sql
+		sql\Trades\SelectTransactionsTrade.sql = sql\Trades\SelectTransactionsTrade.sql
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7472A7E3-716A-4095-B6E6-2BBAE7DC541D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7472A7E3-716A-4095-B6E6-2BBAE7DC541D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7472A7E3-716A-4095-B6E6-2BBAE7DC541D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7472A7E3-716A-4095-B6E6-2BBAE7DC541D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B00B4453-CDD8-4F2B-9F88-4742394D30E6} = {8D5E810E-B411-4010-B628-A83644FAF6ED}
+		{D177ACE8-EBF4-4719-A9D5-6A0804950759} = {8D5E810E-B411-4010-B628-A83644FAF6ED}
+	EndGlobalSection
+EndGlobal
