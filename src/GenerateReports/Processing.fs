@@ -20,7 +20,7 @@ let private isWeekendOrHoliday = function
 
 let generateDates dateFinal =
     id
-    |> Observable.generate dateStart (fun x -> x <= dateFinal) (addDays +1)
+    |> Observable.generate dateStart (fun date -> date <= dateFinal) (addDays +1)
     |> Observable.filter (isWeekendOrHoliday >> not)
 
 //-------------------------------------------------------------------------------------------------
