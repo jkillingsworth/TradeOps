@@ -1,6 +1,7 @@
 ﻿module TradeOps.Processing
 
 open System
+open FSharp.Control.Reactive
 open TradeOps.Types
 
 //-------------------------------------------------------------------------------------------------
@@ -8,6 +9,7 @@ open TradeOps.Types
 let private dateStart = Persistence.selectStartDate ()
 let private holidays = Persistence.selectHolidays ()
 
+let private addDays days (date : DateTime) = date.AddDays(float days)
 let private isWeekendSat (date : DateTime) = date.DayOfWeek = DayOfWeek.Saturday
 let private isWeekendSun (date : DateTime) = date.DayOfWeek = DayOfWeek.Sunday
 
@@ -16,17 +18,10 @@ let private isWeekendOrHoliday = function
     | date when isWeekendSun date -> true
     | date -> Array.contains date holidays
 
-let private isNotWeekendOrHoliday = (isWeekendOrHoliday >> not)
-
-let private generator (date : DateTime) =
-    let next = date.AddDays(1.0)
-    Some (date, next)
-
 let generateDates dateFinal =
-    dateStart
-    |> Seq.unfold generator
-    |> Seq.filter isNotWeekendOrHoliday
-    |> Seq.takeWhile (fun x -> x <= dateFinal)
+    id
+    |> Observable.generate dateStart (fun x -> x <= dateFinal) (addDays +1)
+    |> Observable.filter (isWeekendOrHoliday >> not)
 
 //-------------------------------------------------------------------------------------------------
 
@@ -35,16 +30,14 @@ let private mapSequence = function
     | Split transaction -> transaction.Sequence
     | Trade transaction -> transaction.Sequence
 
-let getTransactions date =
+let renderTransactions transactions date =
 
-    let transactions =
+    let items =
         [ Persistence.selectTransactionsDivid date
           Persistence.selectTransactionsSplit date
           Persistence.selectTransactionsTrade date ]
 
-    let transactions =
-        transactions
-        |> Array.concat
-        |> Array.sortBy mapSequence
-
-    transactions
+    items
+    |> Array.concat
+    |> Array.sortBy mapSequence
+    |> Array.append transactions

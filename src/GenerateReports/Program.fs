@@ -1,17 +1,25 @@
 ﻿module Program
 
 open System
+open FSharp.Control.Reactive
 open TradeOps
 
 //-------------------------------------------------------------------------------------------------
 
 let generateReports dateFinal =
 
-    dateFinal
-    |> Processing.generateDates
-    |> Seq.map Processing.getTransactions
-    |> Seq.collect id
-    |> Output.writeTransactions
+    let dates = Processing.generateDates dateFinal |> Observable.publish
+
+    use subscription =
+        dates
+        |> Observable.fold Processing.renderTransactions [||]
+        |> Observable.subscribe Output.writeTransactions
+
+    use connection =
+        dates
+        |> Observable.connect
+
+    ()
 
 //-------------------------------------------------------------------------------------------------
 
