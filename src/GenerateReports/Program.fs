@@ -8,7 +8,11 @@ open TradeOps
 
 let generateReports dateFinal =
 
-    let dates = Processing.generateDates dateFinal |> Observable.publish
+    let dates =
+        dateFinal
+        |> Processing.generateDates
+        |> Observable.map Processing.getOperations
+        |> Observable.publish
 
     use subscription =
         dates

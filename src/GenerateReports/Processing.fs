@@ -30,14 +30,23 @@ let private mapSequence = function
     | Split transaction -> transaction.Sequence
     | Trade transaction -> transaction.Sequence
 
-let renderTransactions transactions date =
+let getOperations date =
 
-    let items =
+    let transactions =
         [ Persistence.selectTransactionsDivid date
           Persistence.selectTransactionsSplit date
           Persistence.selectTransactionsTrade date ]
 
-    items
-    |> Array.concat
-    |> Array.sortBy mapSequence
-    |> Array.append transactions
+    let transactions =
+        transactions
+        |> Array.concat
+        |> Array.sortBy mapSequence
+
+    { Date = date
+      Transactions = transactions }
+
+//-------------------------------------------------------------------------------------------------
+
+let renderTransactions transactions operations =
+
+    Array.append transactions operations.Transactions

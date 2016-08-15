@@ -28,3 +28,9 @@ type Transaction =
     | Divid of TransactionDivid
     | Split of TransactionSplit
     | Trade of TransactionTrade
+
+//-------------------------------------------------------------------------------------------------
+
+type Operations =
+    { Date         : DateTime
+      Transactions : Transaction[] }
