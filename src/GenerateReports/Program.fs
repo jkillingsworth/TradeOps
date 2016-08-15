@@ -3,6 +3,7 @@
 open System
 open FSharp.Control.Reactive
 open TradeOps
+open TradeOps.Models
 
 //-------------------------------------------------------------------------------------------------
 
@@ -18,6 +19,11 @@ let generateReports dateFinal =
         dates
         |> Observable.fold Processing.renderTransactions [||]
         |> Observable.subscribe Output.writeTransactions
+
+    use subscription =
+        dates
+        |> Observable.fold Processing.renderTransactionListing TransactionListing.empty
+        |> Observable.subscribe Output.writeTransactionListing
 
     use connection =
         dates

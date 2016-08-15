@@ -3,6 +3,7 @@
 open System
 open FSharp.Control.Reactive
 open TradeOps.Types
+open TradeOps.Models
 
 //-------------------------------------------------------------------------------------------------
 
@@ -30,6 +31,20 @@ let private mapSequence = function
     | Split transaction -> transaction.Sequence
     | Trade transaction -> transaction.Sequence
 
+let private mapDate = function
+    | Divid transaction -> transaction.Date
+    | Split transaction -> transaction.Date
+    | Trade transaction -> transaction.Date
+
+let private mapIssueId = function
+    | Divid transaction -> transaction.IssueId
+    | Split transaction -> transaction.IssueId
+    | Trade transaction -> transaction.IssueId
+
+let private mapTicker transaction = ""
+
+//-------------------------------------------------------------------------------------------------
+
 let getOperations date =
 
     let transactions =
@@ -50,3 +65,41 @@ let getOperations date =
 let renderTransactions transactions operations =
 
     Array.append transactions operations.Transactions
+
+//-------------------------------------------------------------------------------------------------
+
+let renderTransactionListing (model : TransactionListing.Model) operations =
+
+    let mapDivid (transaction : TransactionDivid) : TransactionListing.Divid =
+
+        { Sequence = transaction.Sequence
+          Date     = transaction.Date
+          IssueId  = transaction.IssueId
+          Ticker   = transaction |> mapTicker
+          Amount   = transaction.Amount
+          PayDate  = None }
+
+    let mapSplit (transaction : TransactionSplit) : TransactionListing.Split =
+
+        { Sequence = transaction.Sequence
+          Date     = transaction.Date
+          IssueId  = transaction.IssueId
+          Ticker   = transaction |> mapTicker
+          New      = transaction.New
+          Old      = transaction.Old }
+
+    let mapTrade (transaction : TransactionTrade) : TransactionListing.Trade =
+
+        { Sequence = transaction.Sequence
+          Date     = transaction.Date
+          IssueId  = transaction.IssueId
+          Ticker   = transaction |> mapTicker
+          Shares   = transaction.Shares
+          Price    = transaction.Price }
+
+    let accumulate (model : TransactionListing.Model) = function
+        | Divid transaction -> { model with Divids = Array.append model.Divids [| mapDivid transaction |] }
+        | Split transaction -> { model with Splits = Array.append model.Splits [| mapSplit transaction |] }
+        | Trade transaction -> { model with Trades = Array.append model.Trades [| mapTrade transaction |] }
+
+    operations.Transactions |> Array.fold accumulate model

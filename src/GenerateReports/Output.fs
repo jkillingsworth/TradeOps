@@ -3,19 +3,35 @@
 open System
 open System.IO
 open TradeOps.Types
+open TradeOps.Models
 
 //-------------------------------------------------------------------------------------------------
 
 let private folder = Environment.GetEnvironmentVariable("UserProfile") + @"\Desktop\Output\"
 
-let private mapTransaction = function
-    | Divid transaction -> sprintf "%A" transaction
-    | Split transaction -> sprintf "%A" transaction
-    | Trade transaction -> sprintf "%A" transaction
+//-------------------------------------------------------------------------------------------------
 
 let writeTransactions transactions =
 
-    let contents = transactions |> Seq.map mapTransaction
-    let path = Path.Combine(folder, "transactions.txt")
+    let contents = transactions |> Array.map (sprintf "%A")
+    let path = Path.Combine(folder, "Transactions.txt")
+    Directory.CreateDirectory(folder) |> ignore
+    File.WriteAllLines(path, contents)
+
+//-------------------------------------------------------------------------------------------------
+
+let writeTransactionListing (model : TransactionListing.Model) =
+
+    let contents =
+        [ [| "Divids" |]
+          model.Divids |> Array.map (sprintf "%A")
+          [| "Splits" |]
+          model.Splits |> Array.map (sprintf "%A")
+          [| "Trades" |]
+          model.Trades |> Array.map (sprintf "%A") ]
+
+    let contents = Array.concat contents
+
+    let path = Path.Combine(folder, "TransactionListing.txt")
     Directory.CreateDirectory(folder) |> ignore
     File.WriteAllLines(path, contents)
