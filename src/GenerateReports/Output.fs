@@ -11,15 +11,6 @@ let private folder = Environment.GetEnvironmentVariable("UserProfile") + @"\Desk
 
 //-------------------------------------------------------------------------------------------------
 
-let writeTransactions transactions =
-
-    let contents = transactions |> Array.map (sprintf "%A")
-    let path = Path.Combine(folder, "Transactions.txt")
-    Directory.CreateDirectory(folder) |> ignore
-    File.WriteAllLines(path, contents)
-
-//-------------------------------------------------------------------------------------------------
-
 let writeTransactionListing (model : TransactionListing.Model) =
 
     let contents =

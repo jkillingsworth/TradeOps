@@ -62,12 +62,6 @@ let getOperations date =
 
 //-------------------------------------------------------------------------------------------------
 
-let renderTransactions transactions operations =
-
-    Array.append transactions operations.Transactions
-
-//-------------------------------------------------------------------------------------------------
-
 let renderTransactionListing (model : TransactionListing.Model) operations =
 
     let mapDivid (transaction : TransactionDivid) : TransactionListing.Divid =

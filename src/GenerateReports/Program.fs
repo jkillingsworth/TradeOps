@@ -17,11 +17,6 @@ let generateReports dateFinal =
 
     use subscription =
         dates
-        |> Observable.fold Processing.renderTransactions [||]
-        |> Observable.subscribe Output.writeTransactions
-
-    use subscription =
-        dates
         |> Observable.fold Processing.renderTransactionListing TransactionListing.empty
         |> Observable.subscribe Output.writeTransactionListing
 
