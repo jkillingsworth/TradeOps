@@ -69,6 +69,8 @@
     <Compile Include="Persistence.fs" />
     <Compile Include="Models.fs" />
     <Compile Include="Processing.fs" />
+    <EmbeddedResource Include="Report.css" />
+    <EmbeddedResource Include="TransactionListing.html" />
     <Compile Include="Output.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
@@ -83,6 +85,10 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RazorEngine">
+      <HintPath>..\..\packages\RazorEngine.3.9.0\lib\net45\RazorEngine.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -100,6 +106,10 @@
     </Reference>
     <Reference Include="System.Reactive.Linq">
       <HintPath>..\..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor">
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />

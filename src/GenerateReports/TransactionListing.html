@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+  <title>Transaction Listing</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="css/Report.css">
+</head>
+<body>
+
+  <h1>Transaction Listing</h1>
+
+  <h2>Divids</h2>
+
+  <table>
+    <tr>
+      <th class="header">Sequence</th>
+      <th class="header">Date</th>
+      <th class="header">IssueId</th>
+      <th class="header">Ticker</th>
+      <th class="detail">Amount</th>
+      <th class="detail">Pay Date</th>
+    </tr>
+    @foreach (var divid in @Model.Divids)
+    {
+    <tr>
+      <td class="header">@divid.Sequence</td>
+      <td class="header">@String.Format("{0:d}", @divid.Date)</td>
+      <td class="header">@divid.IssueId</td>
+      <td class="header">@divid.Ticker</td>
+      <td class="detail">@String.Format("{0:n5}", @divid.Amount)</td>
+      <td class="detail">@divid.PayDate</td>
+    </tr>
+    }
+  </table>
+
+  <h2>Splits</h2>
+
+  <table>
+    <tr>
+      <th class="header">Sequence</th>
+      <th class="header">Date</th>
+      <th class="header">IssueId</th>
+      <th class="header">Ticker</th>
+      <th class="detail">New</th>
+      <th class="detail">Old</th>
+    </tr>
+    @foreach (var split in @Model.Splits)
+    {
+    <tr>
+      <td class="header">@split.Sequence</td>
+      <td class="header">@String.Format("{0:d}", @split.Date)</td>
+      <td class="header">@split.IssueId</td>
+      <td class="header">@split.Ticker</td>
+      <td class="detail">@split.New</td>
+      <td class="detail">@split.Old</td>
+    </tr>
+    }
+  </table>
+
+  <h2>Trades</h2>
+
+  <table>
+    <tr>
+      <th class="header">Sequence</th>
+      <th class="header">Date</th>
+      <th class="header">IssueId</th>
+      <th class="header">Ticker</th>
+      <th class="detail">Shares</th>
+      <th class="detail">Price</th>
+    </tr>
+    @foreach (var trade in @Model.Trades)
+    {
+    <tr>
+      <td class="header">@trade.Sequence</td>
+      <td class="header">@String.Format("{0:d}", @trade.Date)</td>
+      <td class="header">@trade.IssueId</td>
+      <td class="header">@trade.Ticker</td>
+      <td class="detail">@String.Format("{0:+#;-#;0}", @trade.Shares)</td>
+      <td class="detail">@String.Format("{0:n4}", @trade.Price)</td>
+    </tr>
+    }
+  </table>
+
+</body>
+</html>
