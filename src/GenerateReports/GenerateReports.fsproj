@@ -65,12 +65,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <Content Include="packages.config" />
+    <EmbeddedResource Include="Templates\Report.css" />
+    <EmbeddedResource Include="Templates\TransactionListing.html" />
     <Compile Include="Types.fs" />
     <Compile Include="Persistence.fs" />
     <Compile Include="Models.fs" />
     <Compile Include="Processing.fs" />
-    <EmbeddedResource Include="Report.css" />
-    <EmbeddedResource Include="TransactionListing.html" />
     <Compile Include="Output.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
