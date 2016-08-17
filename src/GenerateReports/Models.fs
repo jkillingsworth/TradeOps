@@ -12,7 +12,7 @@ module TransactionListing =
           IssueId  : int
           Ticker   : string
           Amount   : decimal
-          PayDate  : DateTime option }
+          PayDate  : DateTime }
 
     type Split =
         { Sequence : int

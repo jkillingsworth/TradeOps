@@ -29,7 +29,7 @@
       <td class="header">@divid.IssueId</td>
       <td class="header">@divid.Ticker</td>
       <td class="detail">@String.Format("{0:n5}", @divid.Amount)</td>
-      <td class="detail">@divid.PayDate</td>
+      <td class="detail">@String.Format("{0:d}", @divid.PayDate)</td>
     </tr>
     }
   </table>

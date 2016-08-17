@@ -8,7 +8,8 @@ type TransactionDivid =
     { Sequence : int
       IssueId  : int
       Date     : DateTime
-      Amount   : decimal }
+      Amount   : decimal
+      PayDate  : DateTime }
 
 type TransactionSplit =
     { Sequence : int

@@ -64,7 +64,8 @@ module private SelectTransactionsDivid =
         { Sequence = record.Sequence
           IssueId  = record.IssueId
           Date     = record.Date
-          Amount   = record.Amount }
+          Amount   = record.Amount
+          PayDate  = record.PayDate }
 
     let execute date =
         use command = new CommandProvider()

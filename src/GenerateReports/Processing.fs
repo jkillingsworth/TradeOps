@@ -71,7 +71,7 @@ let renderTransactionListing (model : TransactionListing.Model) operations =
           IssueId  = transaction.IssueId
           Ticker   = transaction |> mapTicker
           Amount   = transaction.Amount
-          PayDate  = None }
+          PayDate  = transaction.PayDate }
 
     let mapSplit (transaction : TransactionSplit) : TransactionListing.Split =
 
