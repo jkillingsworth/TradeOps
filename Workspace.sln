@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Quotes", "Quotes", "{B00B4453-CDD8-4F2B-9F88-4742394D30E6}"
 	ProjectSection(SolutionItems) = preProject
 		sql\Quotes\SelectHolidays.sql = sql\Quotes\SelectHolidays.sql
+		sql\Quotes\SelectIssueTickers.sql = sql\Quotes\SelectIssueTickers.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Trades", "Trades", "{D177ACE8-EBF4-4719-A9D5-6A0804950759}"

@@ -9,6 +9,7 @@ open TradeOps.Models
 
 let private dateStart = Persistence.selectStartDate ()
 let private holidays = Persistence.selectHolidays ()
+let private tickers = Persistence.selectIssueTickers ()
 
 let private addDays days (date : DateTime) = date.AddDays(float days)
 let private isWeekendSat (date : DateTime) = date.DayOfWeek = DayOfWeek.Saturday
@@ -41,7 +42,8 @@ let private mapIssueId = function
     | Split transaction -> transaction.IssueId
     | Trade transaction -> transaction.IssueId
 
-let private mapTicker transaction = ""
+let private mapTicker issueId =
+    tickers.[issueId]
 
 //-------------------------------------------------------------------------------------------------
 
@@ -69,7 +71,7 @@ let renderTransactionListing (model : TransactionListing.Model) operations =
         { Sequence = transaction.Sequence
           Date     = transaction.Date
           IssueId  = transaction.IssueId
-          Ticker   = transaction |> mapTicker
+          Ticker   = transaction.IssueId |> mapTicker
           Amount   = transaction.Amount
           PayDate  = transaction.PayDate }
 
@@ -78,7 +80,7 @@ let renderTransactionListing (model : TransactionListing.Model) operations =
         { Sequence = transaction.Sequence
           Date     = transaction.Date
           IssueId  = transaction.IssueId
-          Ticker   = transaction |> mapTicker
+          Ticker   = transaction.IssueId |> mapTicker
           New      = transaction.New
           Old      = transaction.Old }
 
@@ -87,7 +89,7 @@ let renderTransactionListing (model : TransactionListing.Model) operations =
         { Sequence = transaction.Sequence
           Date     = transaction.Date
           IssueId  = transaction.IssueId
-          Ticker   = transaction |> mapTicker
+          Ticker   = transaction.IssueId |> mapTicker
           Shares   = transaction.Shares
           Price    = transaction.Price }
 

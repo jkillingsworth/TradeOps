@@ -34,6 +34,25 @@ let selectHolidays =
 
 //-------------------------------------------------------------------------------------------------
 
+module private SelectIssueTickers =
+
+    [<Literal>]
+    let private sql = @"..\..\sql\Quotes\SelectIssueTickers.sql"
+
+    type CommandProvider = SqlCommandProvider<sql, connectionNameQuotes, ConfigFile = configFile>
+
+    let execute () =
+        use command = new CommandProvider()
+        let records = command.Execute()
+        records
+        |> Seq.map (fun issue -> issue.IssueId, issue.Ticker)
+        |> Map.ofSeq
+
+let selectIssueTickers =
+    SelectIssueTickers.execute
+
+//-------------------------------------------------------------------------------------------------
+
 module private SelectStartDate =
 
     [<Literal>]
