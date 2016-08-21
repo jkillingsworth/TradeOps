@@ -1,7 +1,7 @@
 ﻿select
     [transaction].[Sequence] as [Sequence],
-    [transaction].[IssueId]  as [IssueId],
     [transaction].[Date]     as [Date],
+    [transaction].[IssueId]  as [IssueId],
     [transaction].[New]      as [New],
     [transaction].[Old]      as [Old]
 from

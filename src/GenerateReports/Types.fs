@@ -6,22 +6,22 @@ open System
 
 type TransactionDivid =
     { Sequence : int
-      IssueId  : int
       Date     : DateTime
+      IssueId  : int
       Amount   : decimal
       PayDate  : DateTime }
 
 type TransactionSplit =
     { Sequence : int
-      IssueId  : int
       Date     : DateTime
+      IssueId  : int
       New      : int
       Old      : int }
 
 type TransactionTrade =
     { Sequence : int
-      IssueId  : int
       Date     : DateTime
+      IssueId  : int
       Shares   : int
       Price    : decimal }
 

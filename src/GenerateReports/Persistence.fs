@@ -81,8 +81,8 @@ module private SelectTransactionsDivid =
     let private ofRecord (record : CommandProvider.Record) : TransactionDivid =
 
         { Sequence = record.Sequence
-          IssueId  = record.IssueId
           Date     = record.Date
+          IssueId  = record.IssueId
           Amount   = record.Amount
           PayDate  = record.PayDate }
 
@@ -109,8 +109,8 @@ module private SelectTransactionsSplit =
     let private ofRecord (record : CommandProvider.Record) : TransactionSplit =
 
         { Sequence = record.Sequence
-          IssueId  = record.IssueId
           Date     = record.Date
+          IssueId  = record.IssueId
           New      = record.New
           Old      = record.Old }
 
@@ -137,8 +137,8 @@ module private SelectTransactionsTrade =
     let private ofRecord (record : CommandProvider.Record) : TransactionTrade =
 
         { Sequence = record.Sequence
-          IssueId  = record.IssueId
           Date     = record.Date
+          IssueId  = record.IssueId
           Shares   = record.Shares
           Price    = record.Price }
 
