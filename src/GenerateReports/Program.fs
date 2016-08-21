@@ -3,25 +3,27 @@
 open System
 open FSharp.Control.Reactive
 open TradeOps
+open TradeOps.Types
 open TradeOps.Models
 
 //-------------------------------------------------------------------------------------------------
 
 let generateReports dateFinal =
 
-    let operations =
+    let statements =
         dateFinal
         |> Processing.generateDates
         |> Observable.map Processing.getOperations
+        |> Observable.scanInit Statement.empty Processing.computeStatement
         |> Observable.publish
 
     use subscription =
-        operations
+        statements
         |> Observable.fold Processing.renderTransactionListing TransactionListing.empty
         |> Observable.subscribe Output.writeTransactionListing
 
     use connection =
-        operations
+        statements
         |> Observable.connect
 
     ()

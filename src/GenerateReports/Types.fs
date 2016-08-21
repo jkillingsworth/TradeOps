@@ -8,8 +8,6 @@ type Issue =
     { IssueId  : int
       Ticker   : string }
 
-//-------------------------------------------------------------------------------------------------
-
 type TransactionDivid =
     { Sequence : int
       Date     : DateTime
@@ -47,3 +45,17 @@ type Operations =
     { Date         : DateTime
       Transactions : Transaction[]
       Stoplosses   : Stoploss[] }
+
+//-------------------------------------------------------------------------------------------------
+
+module Statement =
+
+    type Model =
+        { Date         : DateTime
+          Transactions : Transaction[]
+          Stops        : Map<int, decimal> }
+
+    let empty =
+        { Date         = DateTime.MinValue
+          Transactions = Array.empty
+          Stops        = Array.empty |> Map<int, decimal> }

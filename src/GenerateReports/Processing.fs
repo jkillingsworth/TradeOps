@@ -48,7 +48,7 @@ let private mapTicker issueId =
 
 //-------------------------------------------------------------------------------------------------
 
-let getOperations date =
+let getOperations date : Operations =
 
     let transactions =
         [ Persistence.selectTransactionsDivid date
@@ -68,7 +68,18 @@ let getOperations date =
 
 //-------------------------------------------------------------------------------------------------
 
-let renderTransactionListing (model : TransactionListing.Model) operations =
+let computeStatement (previous : Statement.Model) (operations : Operations) : Statement.Model =
+
+    let updateStop stops stoploss =
+        stops |> Map.add stoploss.IssueId stoploss.Price
+
+    { Date         = operations.Date
+      Transactions = operations.Transactions
+      Stops        = operations.Stoplosses |> Array.fold updateStop previous.Stops }
+
+//-------------------------------------------------------------------------------------------------
+
+let renderTransactionListing (model : TransactionListing.Model) (statements : Statement.Model) =
 
     let mapDivid (transaction : TransactionDivid) : TransactionListing.Divid =
 
@@ -102,4 +113,4 @@ let renderTransactionListing (model : TransactionListing.Model) operations =
         | Split transaction -> { model with Splits = Array.append model.Splits [| mapSplit transaction |] }
         | Trade transaction -> { model with Trades = Array.append model.Trades [| mapTrade transaction |] }
 
-    operations.Transactions |> Array.fold accumulate model
+    statements.Transactions |> Array.fold accumulate model
