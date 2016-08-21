@@ -76,6 +76,31 @@ let selectStartDate =
 
 //-------------------------------------------------------------------------------------------------
 
+module private SelectStoplosses =
+
+    [<Literal>]
+    let private sql = @"..\..\sql\Trades\SelectStoplosses.sql"
+
+    type CommandProvider = SqlCommandProvider<sql, connectionNameTrades, ConfigFile = configFile>
+
+    let private ofRecord (record : CommandProvider.Record) : Stoploss =
+
+        { Date    = record.Date
+          IssueId = record.IssueId
+          Price   = record.Price }
+
+    let execute date =
+        use command = new CommandProvider()
+        let records = command.Execute(date)
+        records
+        |> Seq.map ofRecord
+        |> Seq.toArray
+
+let selectStoplosses =
+    SelectStoplosses.execute
+
+//-------------------------------------------------------------------------------------------------
+
 module private SelectTransactionsDivid =
 
     [<Literal>]

@@ -16,6 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Trades", "Trades", "{D177ACE8-EBF4-4719-A9D5-6A0804950759}"
 	ProjectSection(SolutionItems) = preProject
 		sql\Trades\SelectStartDate.sql = sql\Trades\SelectStartDate.sql
+		sql\Trades\SelectStoplosses.sql = sql\Trades\SelectStoplosses.sql
 		sql\Trades\SelectTransactionsDivid.sql = sql\Trades\SelectTransactionsDivid.sql
 		sql\Trades\SelectTransactionsSplit.sql = sql\Trades\SelectTransactionsSplit.sql
 		sql\Trades\SelectTransactionsTrade.sql = sql\Trades\SelectTransactionsTrade.sql

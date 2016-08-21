@@ -8,6 +8,8 @@ type Issue =
     { IssueId  : int
       Ticker   : string }
 
+//-------------------------------------------------------------------------------------------------
+
 type TransactionDivid =
     { Sequence : int
       Date     : DateTime
@@ -34,8 +36,14 @@ type Transaction =
     | Split of TransactionSplit
     | Trade of TransactionTrade
 
+type Stoploss =
+    { Date     : DateTime
+      IssueId  : int
+      Price    : decimal }
+
 //-------------------------------------------------------------------------------------------------
 
 type Operations =
     { Date         : DateTime
-      Transactions : Transaction[] }
+      Transactions : Transaction[]
+      Stoplosses   : Stoploss[] }

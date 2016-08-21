@@ -60,8 +60,11 @@ let getOperations date =
         |> Array.concat
         |> Array.sortBy mapSequence
 
-    { Date = date
-      Transactions = transactions }
+    let stoplosses = Persistence.selectStoplosses date
+
+    { Date         = date
+      Transactions = transactions
+      Stoplosses   = stoplosses }
 
 //-------------------------------------------------------------------------------------------------
 
