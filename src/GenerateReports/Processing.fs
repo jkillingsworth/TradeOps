@@ -9,7 +9,7 @@ open TradeOps.Models
 
 let private dateStart = Persistence.selectStartDate ()
 let private holidays = Persistence.selectHolidays ()
-let private tickers = Persistence.selectIssueTickers ()
+let private issues = Persistence.selectIssues ()
 
 let private addDays days (date : DateTime) = date.AddDays(float days)
 let private isWeekendSat (date : DateTime) = date.DayOfWeek = DayOfWeek.Saturday
@@ -43,7 +43,8 @@ let private mapIssueId = function
     | Trade transaction -> transaction.IssueId
 
 let private mapTicker issueId =
-    tickers.[issueId]
+    let issue = issues |> Array.find (fun x -> x.IssueId = issueId)
+    issue.Ticker
 
 //-------------------------------------------------------------------------------------------------
 

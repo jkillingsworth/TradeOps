@@ -4,6 +4,10 @@ open System
 
 //-------------------------------------------------------------------------------------------------
 
+type Issue =
+    { IssueId  : int
+      Ticker   : string }
+
 type TransactionDivid =
     { Sequence : int
       Date     : DateTime

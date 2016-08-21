@@ -34,22 +34,27 @@ let selectHolidays =
 
 //-------------------------------------------------------------------------------------------------
 
-module private SelectIssueTickers =
+module private SelectIssues =
 
     [<Literal>]
-    let private sql = @"..\..\sql\Quotes\SelectIssueTickers.sql"
+    let private sql = @"..\..\sql\Quotes\SelectIssues.sql"
 
     type CommandProvider = SqlCommandProvider<sql, connectionNameQuotes, ConfigFile = configFile>
+
+    let private ofRecord (record : CommandProvider.Record) : Issue =
+
+        { IssueId = record.IssueId
+          Ticker  = record.Ticker }
 
     let execute () =
         use command = new CommandProvider()
         let records = command.Execute()
         records
-        |> Seq.map (fun issue -> issue.IssueId, issue.Ticker)
-        |> Map.ofSeq
+        |> Seq.map ofRecord
+        |> Seq.toArray
 
-let selectIssueTickers =
-    SelectIssueTickers.execute
+let selectIssues =
+    SelectIssues.execute
 
 //-------------------------------------------------------------------------------------------------
 
