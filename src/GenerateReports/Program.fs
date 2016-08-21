@@ -9,19 +9,19 @@ open TradeOps.Models
 
 let generateReports dateFinal =
 
-    let dates =
+    let operations =
         dateFinal
         |> Processing.generateDates
         |> Observable.map Processing.getOperations
         |> Observable.publish
 
     use subscription =
-        dates
+        operations
         |> Observable.fold Processing.renderTransactionListing TransactionListing.empty
         |> Observable.subscribe Output.writeTransactionListing
 
     use connection =
-        dates
+        operations
         |> Observable.connect
 
     ()
