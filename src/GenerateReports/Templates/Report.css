@@ -4,7 +4,7 @@
     font-size: 10pt;
 }
 
-th
+th.header, th.detail
 {
     background-color: lightgray;
     width: 10em;
@@ -24,4 +24,9 @@ tr > .header
 tr > .detail
 {
     text-align: right;
+}
+
+tr:hover
+{
+    background-color: yellow;
 }
