@@ -68,14 +68,123 @@ let getOperations date : Operations =
 
 //-------------------------------------------------------------------------------------------------
 
-let computeStatement (previous : Statement.Model) (operations : Operations) : Statement.Model =
+let private processDivid (statement : Statement.Model) (divid : TransactionDivid) =
+
+    statement
+
+let private processSplit (statement : Statement.Model) (split : TransactionSplit) =
+
+    statement
+
+let rec private processTrade (statement : Statement.Model) (trade : TransactionTrade) =
+
+    let shares =
+        statement.PositionsActive
+        |> Array.ofSeq
+        |> Array.where (fun x -> x.IssueId = trade.IssueId)
+        |> Array.sumBy (fun x -> x.Shares)
+
+    let executeTakePosition (statement : Statement.Model) (trade : TransactionTrade) =
+
+        let positionActive : Statement.PositionActive =
+            { IssueId      = trade.IssueId
+              Shares       = trade.Shares
+              TakeSequence = trade.Sequence
+              TakeDate     = trade.Date
+              TakeBasis    = trade.Price }
+
+        { statement with
+            PositionsActive = statement.PositionsActive |> Set.add positionActive }
+
+    let rec executeExitPosition (statement : Statement.Model) (trade : TransactionTrade) =
+
+        let positionActive =
+            statement.PositionsActive
+            |> Seq.sortBy (fun x -> x.TakeSequence)
+            |> Seq.find (fun x -> x.IssueId = trade.IssueId)
+
+        let sharesToClose =
+            match positionActive.Shares with
+            | shares when shares > 0 -> min positionActive.Shares -trade.Shares
+            | shares when shares < 0 -> max positionActive.Shares -trade.Shares
+            | _ -> failwith "Unexpected condition."
+
+        let positionClosed : Statement.PositionClosed =
+            { IssueId      = positionActive.IssueId
+              Shares       = sharesToClose
+              TakeSequence = positionActive.TakeSequence
+              TakeDate     = positionActive.TakeDate
+              TakeBasis    = positionActive.TakeBasis
+              ExitSequence = trade.Sequence
+              ExitDate     = trade.Date
+              ExitPrice    = trade.Price }
+
+        match sharesToClose with
+
+        | shares when (shares > 0 && shares < -trade.Shares) || (shares < 0 && shares > -trade.Shares)
+            ->
+            let positionsClosed = statement.PositionsClosed |> Set.add positionClosed
+            let positionsActive = statement.PositionsActive |> Set.remove positionActive
+
+            let statement =
+                { statement with
+                    PositionsActive = positionsActive
+                    PositionsClosed = positionsClosed }
+
+            let trade =
+                { trade with Shares = trade.Shares + positionActive.Shares }
+
+            executeExitPosition statement trade
+
+        | shares when (shares > 0 && shares < positionActive.Shares) || (shares < 0 && shares > positionActive.Shares)
+            ->
+            let positionsClosed = statement.PositionsClosed |> Set.add positionClosed
+            let positionsActive = statement.PositionsActive |> Set.remove positionActive
+            let positionActive = { positionActive with Shares = positionActive.Shares + trade.Shares }
+            let positionsActive = positionsActive |> Set.add positionActive
+
+            let statement =
+                { statement with
+                    PositionsActive = positionsActive
+                    PositionsClosed = positionsClosed }
+
+            statement
+
+        | _
+            ->
+            let positionsClosed = statement.PositionsClosed |> Set.add positionClosed
+            let positionsActive = statement.PositionsActive |> Set.remove positionActive
+
+            let statement =
+                { statement with
+                    PositionsActive = positionsActive
+                    PositionsClosed = positionsClosed }
+
+            statement
+
+    match shares with
+    | shares when trade.Shares > 0 && shares >= 0 -> executeTakePosition statement trade
+    | shares when trade.Shares < 0 && shares <= 0 -> executeTakePosition statement trade
+    | shares when trade.Shares < 0 && shares >= -trade.Shares -> executeExitPosition statement trade
+    | shares when trade.Shares > 0 && shares <= -trade.Shares -> executeExitPosition statement trade
+    | _ -> failwith "Unexpected condition."
+
+let private processTransaction (statement : Statement.Model) = function
+    | Divid transaction -> processDivid statement transaction
+    | Split transaction -> processSplit statement transaction
+    | Trade transaction -> processTrade statement transaction
+
+let computeStatement (statement : Statement.Model) operations : Statement.Model =
 
     let updateStop stops stoploss =
         stops |> Map.add stoploss.IssueId stoploss.Price
 
-    { Date         = operations.Date
-      Transactions = operations.Transactions
-      Stops        = operations.Stoplosses |> Array.fold updateStop previous.Stops }
+    let statement = operations.Transactions |> Array.fold processTransaction statement
+
+    { statement with
+        Date         = operations.Date
+        Transactions = operations.Transactions
+        Stops        = operations.Stoplosses |> Array.fold updateStop statement.Stops }
 
 //-------------------------------------------------------------------------------------------------
 

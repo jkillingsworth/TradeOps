@@ -50,12 +50,33 @@ type Operations =
 
 module Statement =
 
+    type PositionActive =
+        { IssueId      : int
+          Shares       : int
+          TakeSequence : int
+          TakeDate     : DateTime
+          TakeBasis    : decimal }
+
+    type PositionClosed =
+        { IssueId      : int
+          Shares       : int
+          TakeSequence : int
+          TakeDate     : DateTime
+          TakeBasis    : decimal
+          ExitSequence : int
+          ExitDate     : DateTime
+          ExitPrice    : decimal }
+
     type Model =
-        { Date         : DateTime
-          Transactions : Transaction[]
-          Stops        : Map<int, decimal> }
+        { Date            : DateTime
+          Transactions    : Transaction[]
+          Stops           : Map<int, decimal>
+          PositionsActive : Set<PositionActive>
+          PositionsClosed : Set<PositionClosed> }
 
     let empty =
-        { Date         = DateTime.MinValue
-          Transactions = Array.empty
-          Stops        = Array.empty |> Map<int, decimal> }
+        { Date            = DateTime.MinValue
+          Transactions    = Array.empty
+          Stops           = Map.empty
+          PositionsActive = Set.empty
+          PositionsClosed = Set.empty }
