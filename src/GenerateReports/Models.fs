@@ -36,6 +36,6 @@ module TransactionListing =
           Trades   : Trade[] }
 
     let empty =
-        { Divids   = [||]
-          Splits   = [||]
-          Trades   = [||] }
+        { Divids   = Array.empty
+          Splits   = Array.empty
+          Trades   = Array.empty }
