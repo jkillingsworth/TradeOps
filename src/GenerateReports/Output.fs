@@ -27,34 +27,25 @@ let private service = RazorEngineService.Create(config)
 
 //-------------------------------------------------------------------------------------------------
 
-let writeTransactionListing (model : TransactionListing.Model) =
+let private write model (filenameOutput : string) =
 
     Directory.CreateDirectory(folderOutput) |> ignore
     Directory.CreateDirectory(folderStyles) |> ignore
 
     let filename = "Report.css"
-    let contents = service.RunCompile(filename, null, ())
+    let contents = service.RunCompile(filename, typeof<unit>, ())
     let path = Path.Combine(folderStyles, filename)
     File.WriteAllText(path, contents)
 
-    let filename = "TransactionListing.html"
-    let contents = service.RunCompile(filename, null, model)
+    let filename = filenameOutput
+    let contents = service.RunCompile(filename, model.GetType(), model)
     let path = Path.Combine(folderOutput, filename)
     File.WriteAllText(path, contents)
 
 //-------------------------------------------------------------------------------------------------
 
+let writeTransactionListing (model : TransactionListing.Model) =
+    write model "TransactionListing.html"
+
 let writeStatementPositions (model : StatementPositions.Model) =
-
-    Directory.CreateDirectory(folderOutput) |> ignore
-    Directory.CreateDirectory(folderStyles) |> ignore
-
-    let filename = "Report.css"
-    let contents = service.RunCompile(filename, null, ())
-    let path = Path.Combine(folderStyles, filename)
-    File.WriteAllText(path, contents)
-
-    let filename = "StatementPositions.html"
-    let contents = service.RunCompile(filename, null, model)
-    let path = Path.Combine(folderOutput, filename)
-    File.WriteAllText(path, contents)
+    write model "StatementPositions.html"
