@@ -67,6 +67,7 @@
     <Content Include="packages.config" />
     <EmbeddedResource Include="Templates\Report.css" />
     <EmbeddedResource Include="Templates\TransactionListing.html" />
+    <EmbeddedResource Include="Templates\StatementPositions.html" />
     <Compile Include="Types.fs" />
     <Compile Include="Persistence.fs" />
     <Compile Include="Models.fs" />

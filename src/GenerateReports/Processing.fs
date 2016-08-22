@@ -223,3 +223,43 @@ let renderTransactionListing (model : TransactionListing.Model) (statements : St
         | Trade transaction -> { model with Trades = Array.append model.Trades [| mapTrade transaction |] }
 
     statements.Transactions |> Array.fold accumulate model
+
+//-------------------------------------------------------------------------------------------------
+
+let renderStatementPositions (statements : Statement.Model) : StatementPositions.Model =
+
+    let mapPositionsActive (item : Statement.PositionActive) : StatementPositions.PositionActive =
+
+        { IssueId      = item.IssueId
+          Ticker       = item.IssueId |> mapTicker
+          Shares       = item.Shares
+          TakeSequence = item.TakeSequence
+          TakeDate     = item.TakeDate
+          TakeBasis    = item.TakeBasis }
+
+    let mapPositionsClosed (item : Statement.PositionClosed) : StatementPositions.PositionClosed =
+
+        { IssueId      = item.IssueId
+          Ticker       = item.IssueId |> mapTicker
+          Shares       = item.Shares
+          TakeSequence = item.TakeSequence
+          TakeDate     = item.TakeDate
+          TakeBasis    = item.TakeBasis
+          ExitSequence = item.ExitSequence
+          ExitDate     = item.ExitDate
+          ExitPrice    = item.ExitPrice }
+
+    let positionsActive =
+        statements.PositionsActive
+        |> Seq.map mapPositionsActive
+        |> Seq.sortBy (fun x -> x.IssueId, x.TakeSequence)
+        |> Seq.toArray
+
+    let positionsClosed =
+        statements.PositionsClosed
+        |> Seq.map mapPositionsClosed
+        |> Seq.sortBy (fun x -> x.ExitSequence, x.TakeSequence)
+        |> Seq.toArray
+
+    { PositionsActive = positionsActive
+      PositionsClosed = positionsClosed }

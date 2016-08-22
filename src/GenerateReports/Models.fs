@@ -39,3 +39,30 @@ module TransactionListing =
         { Divids   = Array.empty
           Splits   = Array.empty
           Trades   = Array.empty }
+
+//-------------------------------------------------------------------------------------------------
+
+module StatementPositions =
+
+    type PositionActive =
+        { IssueId      : int
+          Ticker       : string
+          Shares       : int
+          TakeSequence : int
+          TakeDate     : DateTime
+          TakeBasis    : decimal }
+
+    type PositionClosed =
+        { IssueId      : int
+          Ticker       : string
+          Shares       : int
+          TakeSequence : int
+          TakeDate     : DateTime
+          TakeBasis    : decimal
+          ExitSequence : int
+          ExitDate     : DateTime
+          ExitPrice    : decimal }
+
+    type Model =
+        { PositionsActive : PositionActive[]
+          PositionsClosed : PositionClosed[] }

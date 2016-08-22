@@ -22,6 +22,12 @@ let generateReports dateFinal =
         |> Observable.fold Processing.renderTransactionListing TransactionListing.empty
         |> Observable.subscribe Output.writeTransactionListing
 
+    use subscription =
+        statements
+        |> Observable.last
+        |> Observable.map Processing.renderStatementPositions
+        |> Observable.subscribe Output.writeStatementPositions
+
     use connection =
         statements
         |> Observable.connect

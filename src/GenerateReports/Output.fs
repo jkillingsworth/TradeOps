@@ -41,3 +41,20 @@ let writeTransactionListing (model : TransactionListing.Model) =
     let contents = service.RunCompile(filename, null, model)
     let path = Path.Combine(folderOutput, filename)
     File.WriteAllText(path, contents)
+
+//-------------------------------------------------------------------------------------------------
+
+let writeStatementPositions (model : StatementPositions.Model) =
+
+    Directory.CreateDirectory(folderOutput) |> ignore
+    Directory.CreateDirectory(folderStyles) |> ignore
+
+    let filename = "Report.css"
+    let contents = service.RunCompile(filename, null, ())
+    let path = Path.Combine(folderStyles, filename)
+    File.WriteAllText(path, contents)
+
+    let filename = "StatementPositions.html"
+    let contents = service.RunCompile(filename, null, model)
+    let path = Path.Combine(folderOutput, filename)
+    File.WriteAllText(path, contents)
