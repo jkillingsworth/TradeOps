@@ -263,3 +263,22 @@ let renderStatementPositions (statements : Statement.Model) : StatementPositions
 
     { PositionsActive = positionsActive
       PositionsClosed = positionsClosed }
+
+//-------------------------------------------------------------------------------------------------
+
+let renderStatementStops (statements : Statement.Model) : StatementStops.Model =
+
+    let mapStop (issueId, price) : StatementStops.Stop =
+
+        { IssueId = issueId
+          Ticker  = issueId |> mapTicker
+          Price   = price }
+
+    let stops =
+        statements.Stops
+        |> Map.toSeq
+        |> Seq.map mapStop
+        |> Seq.sortBy (fun x -> x.IssueId)
+        |> Seq.toArray
+
+    { Stops = stops }

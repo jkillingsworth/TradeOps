@@ -49,3 +49,6 @@ let writeTransactionListing (model : TransactionListing.Model) =
 
 let writeStatementPositions (model : StatementPositions.Model) =
     write model "StatementPositions.html"
+
+let writeStatementStops (model : StatementStops.Model) =
+    write model "StatementStops.html"

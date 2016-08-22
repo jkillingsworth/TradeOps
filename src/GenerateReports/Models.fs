@@ -66,3 +66,15 @@ module StatementPositions =
     type Model =
         { PositionsActive : PositionActive[]
           PositionsClosed : PositionClosed[] }
+
+//-------------------------------------------------------------------------------------------------
+
+module StatementStops =
+
+    type Stop =
+        { IssueId : int
+          Ticker  : string
+          Price   : decimal }
+
+    type Model =
+        { Stops   : Stop[] }

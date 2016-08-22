@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+  <title>Statement Stops</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="css/Report.css">
+</head>
+<body>
+
+  <h1>Statement Stops</h1>
+
+  <h2>Stops</h2>
+
+  <table>
+    <tr>
+      <th class="header">IssueId</th>
+      <th class="header">Ticker</th>
+      <th class="detail">Price</th>
+    </tr>
+    @foreach (var stop in @Model.Stops)
+    {
+    <tr>
+      <td class="header">@stop.IssueId</td>
+      <td class="header">@stop.Ticker</td>
+      <td class="detail">@String.Format("{0:n2}", @stop.Price)</td>
+    </tr>
+    }
+  </table>
+
+</body>
+</html>

@@ -28,6 +28,12 @@ let generateReports dateFinal =
         |> Observable.map Processing.renderStatementPositions
         |> Observable.subscribe Output.writeStatementPositions
 
+    use subscription =
+        statements
+        |> Observable.last
+        |> Observable.map Processing.renderStatementStops
+        |> Observable.subscribe Output.writeStatementStops
+
     use connection =
         statements
         |> Observable.connect
