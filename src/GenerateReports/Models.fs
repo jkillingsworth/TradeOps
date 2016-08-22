@@ -72,9 +72,10 @@ module StatementPositions =
 module StatementStops =
 
     type Stop =
-        { IssueId : int
-          Ticker  : string
-          Price   : decimal }
+        { IssueId     : int
+          Ticker      : string
+          Price       : decimal }
 
     type Model =
-        { Stops   : Stop[] }
+        { StopsActive : Stop[]
+          StopsClosed : Stop[] }

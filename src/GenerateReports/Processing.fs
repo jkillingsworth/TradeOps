@@ -274,11 +274,24 @@ let renderStatementStops (statements : Statement.Model) : StatementStops.Model =
           Ticker  = issueId |> mapTicker
           Price   = price }
 
-    let stops =
+    let isActive (issueId, _) =
+        statements.PositionsActive |> Set.exists (fun x -> x.IssueId = issueId)
+
+    let stopsActive =
         statements.Stops
         |> Map.toSeq
+        |> Seq.filter (isActive >> id)
         |> Seq.map mapStop
         |> Seq.sortBy (fun x -> x.IssueId)
         |> Seq.toArray
 
-    { Stops = stops }
+    let stopsClosed =
+        statements.Stops
+        |> Map.toSeq
+        |> Seq.filter (isActive >> not)
+        |> Seq.map mapStop
+        |> Seq.sortBy (fun x -> x.IssueId)
+        |> Seq.toArray
+
+    { StopsActive = stopsActive
+      StopsClosed = stopsClosed }
