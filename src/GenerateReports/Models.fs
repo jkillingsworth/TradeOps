@@ -45,23 +45,23 @@ module TransactionListing =
 module StatementPositions =
 
     type PositionActive =
-        { IssueId      : int
-          Ticker       : string
-          Shares       : int
-          TakeSequence : int
-          TakeDate     : DateTime
-          TakeBasis    : decimal }
+        { Sequence        : int
+          Date            : DateTime
+          IssueId         : int
+          Ticker          : string
+          Shares          : int
+          CostBasis       : decimal }
 
     type PositionClosed =
-        { IssueId      : int
-          Ticker       : string
-          Shares       : int
-          TakeSequence : int
-          TakeDate     : DateTime
-          TakeBasis    : decimal
-          ExitSequence : int
-          ExitDate     : DateTime
-          ExitPrice    : decimal }
+        { Sequence        : int
+          Date            : DateTime
+          IssueId         : int
+          Ticker          : string
+          Shares          : int
+          CostBasis       : decimal
+          ExitPrice       : decimal
+          EntrySequence   : int
+          EntryDate       : DateTime }
 
     type Model =
         { PositionsActive : PositionActive[]

@@ -87,11 +87,11 @@ let rec private processTrade (statement : Statement.Model) (trade : TransactionT
     let executeTakePosition (statement : Statement.Model) (trade : TransactionTrade) =
 
         let positionActive : Statement.PositionActive =
-            { IssueId      = trade.IssueId
+            { Sequence     = trade.Sequence
+              Date         = trade.Date
+              IssueId      = trade.IssueId
               Shares       = trade.Shares
-              TakeSequence = trade.Sequence
-              TakeDate     = trade.Date
-              TakeBasis    = trade.Price }
+              CostBasis    = trade.Price }
 
         { statement with
             PositionsActive = statement.PositionsActive |> Set.add positionActive }
@@ -100,7 +100,7 @@ let rec private processTrade (statement : Statement.Model) (trade : TransactionT
 
         let positionActive =
             statement.PositionsActive
-            |> Seq.sortBy (fun x -> x.TakeSequence)
+            |> Seq.sortBy (fun x -> x.Sequence)
             |> Seq.find (fun x -> x.IssueId = trade.IssueId)
 
         let sharesToClose =
@@ -110,14 +110,14 @@ let rec private processTrade (statement : Statement.Model) (trade : TransactionT
             | _ -> failwith "Unexpected condition."
 
         let positionClosed : Statement.PositionClosed =
-            { IssueId      = positionActive.IssueId
-              Shares       = sharesToClose
-              TakeSequence = positionActive.TakeSequence
-              TakeDate     = positionActive.TakeDate
-              TakeBasis    = positionActive.TakeBasis
-              ExitSequence = trade.Sequence
-              ExitDate     = trade.Date
-              ExitPrice    = trade.Price }
+            { Sequence      = trade.Sequence
+              Date          = trade.Date
+              IssueId       = positionActive.IssueId
+              Shares        = sharesToClose
+              CostBasis     = positionActive.CostBasis
+              ExitPrice     = trade.Price
+              EntrySequence = positionActive.Sequence
+              EntryDate     = positionActive.Date }
 
         match sharesToClose with
 
@@ -230,35 +230,35 @@ let renderStatementPositions (statements : Statement.Model) : StatementPositions
 
     let mapPositionsActive (item : Statement.PositionActive) : StatementPositions.PositionActive =
 
-        { IssueId      = item.IssueId
-          Ticker       = item.IssueId |> mapTicker
-          Shares       = item.Shares
-          TakeSequence = item.TakeSequence
-          TakeDate     = item.TakeDate
-          TakeBasis    = item.TakeBasis }
+        { Sequence      = item.Sequence
+          Date          = item.Date
+          IssueId       = item.IssueId
+          Ticker        = item.IssueId |> mapTicker
+          Shares        = item.Shares
+          CostBasis     = item.CostBasis }
 
     let mapPositionsClosed (item : Statement.PositionClosed) : StatementPositions.PositionClosed =
 
-        { IssueId      = item.IssueId
-          Ticker       = item.IssueId |> mapTicker
-          Shares       = item.Shares
-          TakeSequence = item.TakeSequence
-          TakeDate     = item.TakeDate
-          TakeBasis    = item.TakeBasis
-          ExitSequence = item.ExitSequence
-          ExitDate     = item.ExitDate
-          ExitPrice    = item.ExitPrice }
+        { Sequence      = item.Sequence
+          Date          = item.Date
+          IssueId       = item.IssueId
+          Ticker        = item.IssueId |> mapTicker
+          Shares        = item.Shares
+          CostBasis     = item.CostBasis
+          ExitPrice     = item.ExitPrice
+          EntrySequence = item.EntrySequence
+          EntryDate     = item.EntryDate }
 
     let positionsActive =
         statements.PositionsActive
         |> Seq.map mapPositionsActive
-        |> Seq.sortBy (fun x -> x.IssueId, x.TakeSequence)
+        |> Seq.sortBy (fun x -> x.IssueId, x.Sequence)
         |> Seq.toArray
 
     let positionsClosed =
         statements.PositionsClosed
         |> Seq.map mapPositionsClosed
-        |> Seq.sortBy (fun x -> x.ExitSequence, x.TakeSequence)
+        |> Seq.sortBy (fun x -> x.Sequence, x.EntrySequence)
         |> Seq.toArray
 
     { PositionsActive = positionsActive

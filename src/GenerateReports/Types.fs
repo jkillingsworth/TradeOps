@@ -51,21 +51,21 @@ type Operations =
 module Statement =
 
     type PositionActive =
-        { IssueId      : int
-          Shares       : int
-          TakeSequence : int
-          TakeDate     : DateTime
-          TakeBasis    : decimal }
+        { Sequence        : int
+          Date            : DateTime
+          IssueId         : int
+          Shares          : int
+          CostBasis       : decimal }
 
     type PositionClosed =
-        { IssueId      : int
-          Shares       : int
-          TakeSequence : int
-          TakeDate     : DateTime
-          TakeBasis    : decimal
-          ExitSequence : int
-          ExitDate     : DateTime
-          ExitPrice    : decimal }
+        { Sequence        : int
+          Date            : DateTime
+          IssueId         : int
+          Shares          : int
+          CostBasis       : decimal
+          ExitPrice       : decimal
+          EntrySequence   : int
+          EntryDate       : DateTime }
 
     type Model =
         { Date            : DateTime

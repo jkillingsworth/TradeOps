@@ -14,22 +14,22 @@
 
   <table>
     <tr>
+      <th class="header">Sequence</th>
+      <th class="header">Date</th>
       <th class="header">IssueId</th>
       <th class="header">Ticker</th>
       <th class="detail">Shares</th>
-      <th class="header">TakeSequence</th>
-      <th class="header">TakeDate</th>
-      <th class="detail">TakeBasis</th>
+      <th class="detail">CostBasis</th>
     </tr>
     @foreach (var position in @Model.PositionsActive)
     {
     <tr>
+      <td class="header">@position.Sequence</td>
+      <td class="header">@String.Format("{0:d}", @position.Date)</td>
       <td class="header">@position.IssueId</td>
       <td class="header">@position.Ticker</td>
       <td class="detail">@String.Format("{0:+#;-#;0}", @position.Shares)</td>
-      <td class="header">@position.TakeSequence</td>
-      <td class="header">@String.Format("{0:d}", @position.TakeDate)</td>
-      <td class="detail">@String.Format("{0:n4}", @position.TakeBasis)</td>
+      <td class="detail">@String.Format("{0:n4}", @position.CostBasis)</td>
     </tr>
     }
   </table>
@@ -38,28 +38,30 @@
 
   <table>
     <tr>
+      <th class="header">Sequence</th>
+      <th class="header">Date</th>
       <th class="header">IssueId</th>
       <th class="header">Ticker</th>
       <th class="detail">Shares</th>
-      <th class="header">TakeSequence</th>
-      <th class="header">TakeDate</th>
-      <th class="detail">TakeBasis</th>
-      <th class="header">ExitSequence</th>
-      <th class="header">ExitDate</th>
+      <th class="detail">CostBasis</th>
       <th class="detail">ExitPrice</th>
+      <th class="spacer"></th>
+      <th class="header">EntrySequence</th>
+      <th class="header">EntryDate</th>
     </tr>
     @foreach (var position in @Model.PositionsClosed)
     {
     <tr>
+      <td class="header">@position.Sequence</td>
+      <td class="header">@String.Format("{0:d}", @position.Date)</td>
       <td class="header">@position.IssueId</td>
       <td class="header">@position.Ticker</td>
       <td class="detail">@String.Format("{0:+#;-#;0}", @position.Shares)</td>
-      <td class="header">@position.TakeSequence</td>
-      <td class="header">@String.Format("{0:d}", @position.TakeDate)</td>
-      <td class="detail">@String.Format("{0:n4}", @position.TakeBasis)</td>
-      <td class="header">@position.ExitSequence</td>
-      <td class="header">@String.Format("{0:d}", @position.ExitDate)</td>
+      <td class="detail">@String.Format("{0:n4}", @position.CostBasis)</td>
       <td class="detail">@String.Format("{0:n4}", @position.ExitPrice)</td>
+      <td class="spacer"></td>
+      <td class="header">@position.EntrySequence</td>
+      <td class="header">@String.Format("{0:d}", @position.EntryDate)</td>
     </tr>
     }
   </table>
