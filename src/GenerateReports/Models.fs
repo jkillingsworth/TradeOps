@@ -4,7 +4,7 @@ open System
 
 //-------------------------------------------------------------------------------------------------
 
-module TransactionListing =
+module StatementTransactions =
 
     type Divid = 
         { Sequence : int
@@ -34,11 +34,6 @@ module TransactionListing =
         { Divids   : Divid[]
           Splits   : Split[]
           Trades   : Trade[] }
-
-    let empty =
-        { Divids   = Array.empty
-          Splits   = Array.empty
-          Trades   = Array.empty }
 
 //-------------------------------------------------------------------------------------------------
 

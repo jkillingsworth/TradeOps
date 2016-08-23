@@ -19,8 +19,9 @@ let generateReports dateFinal =
 
     use subscription =
         statements
-        |> Observable.fold Processing.renderTransactionListing TransactionListing.empty
-        |> Observable.subscribe Output.writeTransactionListing
+        |> Observable.last
+        |> Observable.map Processing.renderStatementTransactions
+        |> Observable.subscribe Output.writeStatementTransactions
 
     use subscription =
         statements

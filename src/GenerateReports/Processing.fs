@@ -192,43 +192,46 @@ let computeStatement (statement : Statement.Model) operations : Statement.Model 
 
 //-------------------------------------------------------------------------------------------------
 
-let renderTransactionListing (model : TransactionListing.Model) (statement : Statement.Model) =
+let renderStatementTransactions (statement : Statement.Model) =
 
-    let mapDivid (transaction : TransactionDivid) : TransactionListing.Divid =
+    let mapDivid (item : TransactionDivid) : StatementTransactions.Divid =
 
-        { Sequence = transaction.Sequence
-          Date     = transaction.Date
-          IssueId  = transaction.IssueId
-          Ticker   = transaction.IssueId |> mapTicker
-          Amount   = transaction.Amount
-          PayDate  = transaction.PayDate }
+        { Sequence = item.Sequence
+          Date     = item.Date
+          IssueId  = item.IssueId
+          Ticker   = item.IssueId |> mapTicker
+          Amount   = item.Amount
+          PayDate  = item.PayDate }
 
-    let mapSplit (transaction : TransactionSplit) : TransactionListing.Split =
+    let mapSplit (item : TransactionSplit) : StatementTransactions.Split =
 
-        { Sequence = transaction.Sequence
-          Date     = transaction.Date
-          IssueId  = transaction.IssueId
-          Ticker   = transaction.IssueId |> mapTicker
-          New      = transaction.New
-          Old      = transaction.Old }
+        { Sequence = item.Sequence
+          Date     = item.Date
+          IssueId  = item.IssueId
+          Ticker   = item.IssueId |> mapTicker
+          New      = item.New
+          Old      = item.Old }
 
-    let mapTrade (transaction : TransactionTrade) : TransactionListing.Trade =
+    let mapTrade (item : TransactionTrade) : StatementTransactions.Trade =
 
-        { Sequence = transaction.Sequence
-          Date     = transaction.Date
-          IssueId  = transaction.IssueId
-          Ticker   = transaction.IssueId |> mapTicker
-          Shares   = transaction.Shares
-          Price    = transaction.Price }
+        { Sequence = item.Sequence
+          Date     = item.Date
+          IssueId  = item.IssueId
+          Ticker   = item.IssueId |> mapTicker
+          Shares   = item.Shares
+          Price    = item.Price }
 
-    let accumulate (model : TransactionListing.Model) = function
+    let accumulate (model : StatementTransactions.Model) = function
         | Divid transaction -> { model with Divids = Array.append model.Divids [| mapDivid transaction |] }
         | Split transaction -> { model with Splits = Array.append model.Splits [| mapSplit transaction |] }
         | Trade transaction -> { model with Trades = Array.append model.Trades [| mapTrade transaction |] }
 
-    statement.Transactions
-    |> Array.filter (fun transaction -> transaction |> mapDate = statement.Date)
-    |> Array.fold accumulate model
+    let model : StatementTransactions.Model =
+        { Divids = Array.empty
+          Splits = Array.empty
+          Trades = Array.empty }
+
+    statement.Transactions |> Array.fold accumulate model
 
 //-------------------------------------------------------------------------------------------------
 
