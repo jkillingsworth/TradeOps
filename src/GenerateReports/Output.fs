@@ -5,7 +5,7 @@ open System.IO
 open System.Reflection
 open RazorEngine.Configuration
 open RazorEngine.Templating
-open TradeOps.Models
+open TradeOps.Reports
 
 //-------------------------------------------------------------------------------------------------
 

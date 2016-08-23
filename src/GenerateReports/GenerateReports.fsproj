@@ -71,8 +71,10 @@
     <EmbeddedResource Include="Templates\StatementStops.html" />
     <Compile Include="Types.fs" />
     <Compile Include="Persistence.fs" />
-    <Compile Include="Models.fs" />
     <Compile Include="Processing.fs" />
+    <Compile Include="Reports.StatementTransactions.fs" />
+    <Compile Include="Reports.StatementPositions.fs" />
+    <Compile Include="Reports.StatementStops.fs" />
     <Compile Include="Output.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

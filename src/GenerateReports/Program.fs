@@ -4,7 +4,7 @@ open System
 open FSharp.Control.Reactive
 open TradeOps
 open TradeOps.Types
-open TradeOps.Models
+open TradeOps.Reports
 
 //-------------------------------------------------------------------------------------------------
 
@@ -20,19 +20,19 @@ let generateReports dateFinal =
     use subscription =
         statements
         |> Observable.last
-        |> Observable.map Processing.renderStatementTransactions
+        |> Observable.map StatementTransactions.render
         |> Observable.subscribe Output.writeStatementTransactions
 
     use subscription =
         statements
         |> Observable.last
-        |> Observable.map Processing.renderStatementPositions
+        |> Observable.map StatementPositions.render
         |> Observable.subscribe Output.writeStatementPositions
 
     use subscription =
         statements
         |> Observable.last
-        |> Observable.map Processing.renderStatementStops
+        |> Observable.map StatementStops.render
         |> Observable.subscribe Output.writeStatementStops
 
     use connection =
