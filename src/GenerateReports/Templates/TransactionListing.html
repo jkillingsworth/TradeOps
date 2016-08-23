@@ -21,15 +21,15 @@
       <th class="detail">Amount</th>
       <th class="detail">Pay Date</th>
     </tr>
-    @foreach (var divid in @Model.Divids)
+    @foreach (var item in @Model.Divids)
     {
     <tr>
-      <td class="header">@divid.Sequence</td>
-      <td class="header">@String.Format("{0:d}", @divid.Date)</td>
-      <td class="header">@divid.IssueId</td>
-      <td class="header">@divid.Ticker</td>
-      <td class="detail">@String.Format("{0:n5}", @divid.Amount)</td>
-      <td class="detail">@String.Format("{0:d}", @divid.PayDate)</td>
+      <td class="header">@item.Sequence</td>
+      <td class="header">@String.Format("{0:d}", @item.Date)</td>
+      <td class="header">@item.IssueId</td>
+      <td class="header">@item.Ticker</td>
+      <td class="detail">@String.Format("{0:n5}", @item.Amount)</td>
+      <td class="detail">@String.Format("{0:d}", @item.PayDate)</td>
     </tr>
     }
   </table>
@@ -45,15 +45,15 @@
       <th class="detail">New</th>
       <th class="detail">Old</th>
     </tr>
-    @foreach (var split in @Model.Splits)
+    @foreach (var item in @Model.Splits)
     {
     <tr>
-      <td class="header">@split.Sequence</td>
-      <td class="header">@String.Format("{0:d}", @split.Date)</td>
-      <td class="header">@split.IssueId</td>
-      <td class="header">@split.Ticker</td>
-      <td class="detail">@split.New</td>
-      <td class="detail">@split.Old</td>
+      <td class="header">@item.Sequence</td>
+      <td class="header">@String.Format("{0:d}", @item.Date)</td>
+      <td class="header">@item.IssueId</td>
+      <td class="header">@item.Ticker</td>
+      <td class="detail">@item.New</td>
+      <td class="detail">@item.Old</td>
     </tr>
     }
   </table>
@@ -69,15 +69,15 @@
       <th class="detail">Shares</th>
       <th class="detail">Price</th>
     </tr>
-    @foreach (var trade in @Model.Trades)
+    @foreach (var item in @Model.Trades)
     {
     <tr>
-      <td class="header">@trade.Sequence</td>
-      <td class="header">@String.Format("{0:d}", @trade.Date)</td>
-      <td class="header">@trade.IssueId</td>
-      <td class="header">@trade.Ticker</td>
-      <td class="detail">@String.Format("{0:+#;-#;0}", @trade.Shares)</td>
-      <td class="detail">@String.Format("{0:n4}", @trade.Price)</td>
+      <td class="header">@item.Sequence</td>
+      <td class="header">@String.Format("{0:d}", @item.Date)</td>
+      <td class="header">@item.IssueId</td>
+      <td class="header">@item.Ticker</td>
+      <td class="detail">@String.Format("{0:+#;-#;0}", @item.Shares)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Price)</td>
     </tr>
     }
   </table>

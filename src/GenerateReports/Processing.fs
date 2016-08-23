@@ -188,7 +188,7 @@ let computeStatement (statement : Statement.Model) operations : Statement.Model 
 
 //-------------------------------------------------------------------------------------------------
 
-let renderTransactionListing (model : TransactionListing.Model) (statements : Statement.Model) =
+let renderTransactionListing (model : TransactionListing.Model) (statement : Statement.Model) =
 
     let mapDivid (transaction : TransactionDivid) : TransactionListing.Divid =
 
@@ -222,11 +222,11 @@ let renderTransactionListing (model : TransactionListing.Model) (statements : St
         | Split transaction -> { model with Splits = Array.append model.Splits [| mapSplit transaction |] }
         | Trade transaction -> { model with Trades = Array.append model.Trades [| mapTrade transaction |] }
 
-    statements.Transactions |> Array.fold accumulate model
+    statement.Transactions |> Array.fold accumulate model
 
 //-------------------------------------------------------------------------------------------------
 
-let renderStatementPositions (statements : Statement.Model) : StatementPositions.Model =
+let renderStatementPositions (statement : Statement.Model) : StatementPositions.Model =
 
     let mapPositionsActive (item : Statement.PositionActive) : StatementPositions.PositionActive =
 
@@ -250,13 +250,13 @@ let renderStatementPositions (statements : Statement.Model) : StatementPositions
           EntryDate     = item.EntryDate }
 
     let positionsActive =
-        statements.PositionsActive
+        statement.PositionsActive
         |> Seq.map mapPositionsActive
         |> Seq.sortBy (fun x -> x.IssueId, x.Sequence)
         |> Seq.toArray
 
     let positionsClosed =
-        statements.PositionsClosed
+        statement.PositionsClosed
         |> Seq.map mapPositionsClosed
         |> Seq.sortBy (fun x -> x.Sequence, x.EntrySequence)
         |> Seq.toArray
@@ -266,7 +266,7 @@ let renderStatementPositions (statements : Statement.Model) : StatementPositions
 
 //-------------------------------------------------------------------------------------------------
 
-let renderStatementStops (statements : Statement.Model) : StatementStops.Model =
+let renderStatementStops (statement : Statement.Model) : StatementStops.Model =
 
     let mapStop (issueId, price) : StatementStops.Stop =
 
@@ -275,10 +275,10 @@ let renderStatementStops (statements : Statement.Model) : StatementStops.Model =
           Price   = price }
 
     let isActive (issueId, _) =
-        statements.PositionsActive |> Set.exists (fun x -> x.IssueId = issueId)
+        statement.PositionsActive |> Set.exists (fun x -> x.IssueId = issueId)
 
     let stopsActive =
-        statements.Stops
+        statement.Stops
         |> Map.toSeq
         |> Seq.filter (isActive >> id)
         |> Seq.map mapStop
@@ -286,7 +286,7 @@ let renderStatementStops (statements : Statement.Model) : StatementStops.Model =
         |> Seq.toArray
 
     let stopsClosed =
-        statements.Stops
+        statement.Stops
         |> Map.toSeq
         |> Seq.filter (isActive >> not)
         |> Seq.map mapStop
