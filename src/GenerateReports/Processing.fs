@@ -84,7 +84,7 @@ let rec private processTrade (statement : Statement.Model) (trade : TransactionT
         |> Array.where (fun x -> x.IssueId = trade.IssueId)
         |> Array.sumBy (fun x -> x.Shares)
 
-    let executeTakePosition (statement : Statement.Model) (trade : TransactionTrade) =
+    let processTakePosition (statement : Statement.Model) (trade : TransactionTrade) =
 
         let positionActive : Statement.PositionActive =
             { Sequence     = trade.Sequence
@@ -96,7 +96,7 @@ let rec private processTrade (statement : Statement.Model) (trade : TransactionT
         { statement with
             PositionsActive = statement.PositionsActive |> Set.add positionActive }
 
-    let rec executeExitPosition (statement : Statement.Model) (trade : TransactionTrade) =
+    let rec processExitPosition (statement : Statement.Model) (trade : TransactionTrade) =
 
         let positionActive =
             statement.PositionsActive
@@ -134,7 +134,7 @@ let rec private processTrade (statement : Statement.Model) (trade : TransactionT
             let trade =
                 { trade with Shares = trade.Shares + positionActive.Shares }
 
-            executeExitPosition statement trade
+            processExitPosition statement trade
 
         | shares when (shares > 0 && shares < positionActive.Shares) || (shares < 0 && shares > positionActive.Shares)
             ->
@@ -163,10 +163,10 @@ let rec private processTrade (statement : Statement.Model) (trade : TransactionT
             statement
 
     match shares with
-    | shares when trade.Shares > 0 && shares >= 0 -> executeTakePosition statement trade
-    | shares when trade.Shares < 0 && shares <= 0 -> executeTakePosition statement trade
-    | shares when trade.Shares < 0 && shares >= -trade.Shares -> executeExitPosition statement trade
-    | shares when trade.Shares > 0 && shares <= -trade.Shares -> executeExitPosition statement trade
+    | shares when trade.Shares > 0 && shares >= 0 -> processTakePosition statement trade
+    | shares when trade.Shares < 0 && shares <= 0 -> processTakePosition statement trade
+    | shares when trade.Shares < 0 && shares >= -trade.Shares -> processExitPosition statement trade
+    | shares when trade.Shares > 0 && shares <= -trade.Shares -> processExitPosition statement trade
     | _ -> failwith "Unexpected condition."
 
 let private processTransaction (statement : Statement.Model) = function
@@ -174,17 +174,21 @@ let private processTransaction (statement : Statement.Model) = function
     | Split transaction -> processSplit statement transaction
     | Trade transaction -> processTrade statement transaction
 
+let private applyTransaction (statement : Statement.Model) transaction =
+
+    let statement = processTransaction statement transaction
+    let transactions = [| transaction |] |> Array.append statement.Transactions
+    { statement with Transactions = transactions }
+
 let computeStatement (statement : Statement.Model) operations : Statement.Model =
 
-    let updateStop stops stoploss =
-        stops |> Map.add stoploss.IssueId stoploss.Price
+    let updateStop stops stoploss = stops |> Map.add stoploss.IssueId stoploss.Price
 
-    let statement = operations.Transactions |> Array.fold processTransaction statement
+    let statement = { statement with Date  = operations.Date }
+    let statement = { statement with Stops = operations.Stoplosses |> Array.fold updateStop statement.Stops }
 
-    { statement with
-        Date         = operations.Date
-        Transactions = operations.Transactions
-        Stops        = operations.Stoplosses |> Array.fold updateStop statement.Stops }
+    operations.Transactions
+    |> Array.fold applyTransaction statement
 
 //-------------------------------------------------------------------------------------------------
 
@@ -222,7 +226,9 @@ let renderTransactionListing (model : TransactionListing.Model) (statement : Sta
         | Split transaction -> { model with Splits = Array.append model.Splits [| mapSplit transaction |] }
         | Trade transaction -> { model with Trades = Array.append model.Trades [| mapTrade transaction |] }
 
-    statement.Transactions |> Array.fold accumulate model
+    statement.Transactions
+    |> Array.filter (fun transaction -> transaction |> mapDate = statement.Date)
+    |> Array.fold accumulate model
 
 //-------------------------------------------------------------------------------------------------
 

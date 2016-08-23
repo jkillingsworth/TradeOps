@@ -70,9 +70,9 @@ module Statement =
     type Model =
         { Date            : DateTime
           Transactions    : Transaction[]
-          Stops           : Map<int, decimal>
           PositionsActive : Set<PositionActive>
-          PositionsClosed : Set<PositionClosed> }
+          PositionsClosed : Set<PositionClosed>
+          Stops           : Map<int, decimal> }
 
     let empty =
         { Date            = DateTime.MinValue
