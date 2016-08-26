@@ -8,10 +8,20 @@ type Issue =
     { IssueId  : int
       Ticker   : string }
 
+type Position =
+    | Bullish
+    | Bearish
+
+type Activity =
+    | Opening
+    | Closing
+
 type TransactionDivid =
     { Sequence : int
       Date     : DateTime
       IssueId  : int
+      Position : Position
+      Shares   : int
       Amount   : decimal
       PayDate  : DateTime }
 
@@ -19,6 +29,8 @@ type TransactionSplit =
     { Sequence : int
       Date     : DateTime
       IssueId  : int
+      Position : Position
+      Shares   : int
       New      : int
       Old      : int }
 
@@ -26,7 +38,9 @@ type TransactionTrade =
     { Sequence : int
       Date     : DateTime
       IssueId  : int
+      Position : Position
       Shares   : int
+      Activity : Activity
       Price    : decimal }
 
 type Transaction =
@@ -54,6 +68,7 @@ module Statement =
         { Sequence        : int
           Date            : DateTime
           IssueId         : int
+          Position        : Position
           Shares          : int
           CostBasis       : decimal }
 
@@ -61,6 +76,7 @@ module Statement =
         { Sequence        : int
           Date            : DateTime
           IssueId         : int
+          Position        : Position
           Shares          : int
           CostBasis       : decimal
           ExitPrice       : decimal

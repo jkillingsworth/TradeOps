@@ -81,91 +81,64 @@ let private processTradeOpening (statement : Statement.Model) (trade : Transacti
         { Sequence     = trade.Sequence
           Date         = trade.Date
           IssueId      = trade.IssueId
+          Position     = trade.Position
           Shares       = trade.Shares
           CostBasis    = trade.Price }
 
     { statement with
         PositionsActive = statement.PositionsActive |> Set.add positionActive }
 
-let rec processTradeClosing (statement : Statement.Model) (trade : TransactionTrade) =
+let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade) =
 
-    let positionActive =
-        statement.PositionsActive
-        |> Seq.sortBy (fun x -> x.Sequence)
-        |> Seq.find (fun x -> x.IssueId = trade.IssueId)
+    let rec loop (statement : Statement.Model) = function
+        | shares when shares = 0 -> statement
+        | shares
+            ->
+            let positionsActive = statement.PositionsActive
+            let positionsClosed = statement.PositionsClosed
 
-    let sharesToClose =
-        match positionActive.Shares with
-        | shares when shares > 0 -> min positionActive.Shares -trade.Shares
-        | shares when shares < 0 -> max positionActive.Shares -trade.Shares
-        | _ -> failwith "Unexpected condition."
+            let positionSubject =
+                statement.PositionsActive
+                |> Seq.sortBy (fun x -> x.Sequence)
+                |> Seq.filter (fun x -> x.IssueId = trade.IssueId)
+                |> Seq.filter (fun x -> x.Position = trade.Position)
+                |> Seq.head
 
-    let positionClosed : Statement.PositionClosed =
-        { Sequence      = trade.Sequence
-          Date          = trade.Date
-          IssueId       = positionActive.IssueId
-          Shares        = sharesToClose
-          CostBasis     = positionActive.CostBasis
-          ExitPrice     = trade.Price
-          EntrySequence = positionActive.Sequence
-          EntryDate     = positionActive.Date }
+            let positionClosed : Statement.PositionClosed =
+                { Sequence      = trade.Sequence
+                  Date          = trade.Date
+                  IssueId       = trade.IssueId
+                  Position      = trade.Position
+                  Shares        = min shares positionSubject.Shares
+                  CostBasis     = positionSubject.CostBasis
+                  ExitPrice     = trade.Price
+                  EntrySequence = positionSubject.Sequence
+                  EntryDate     = positionSubject.Date }
 
-    match sharesToClose with
+            let positionsClosed = positionsClosed |> Set.add positionClosed
+            let positionsActive = positionsActive |> Set.remove positionSubject
 
-    | shares when (shares > 0 && shares < -trade.Shares) || (shares < 0 && shares > -trade.Shares)
-        ->
-        let positionsClosed = statement.PositionsClosed |> Set.add positionClosed
-        let positionsActive = statement.PositionsActive |> Set.remove positionActive
+            let statement =
+                if positionSubject.Shares > shares then
+                    let positionSubject = { positionSubject with Shares = positionSubject.Shares - shares }
+                    let positionsActive = positionsActive |> Set.add positionSubject
+                    { statement with
+                        PositionsActive = positionsActive
+                        PositionsClosed = positionsClosed }
+                else
+                    { statement with
+                        PositionsActive = positionsActive
+                        PositionsClosed = positionsClosed }
 
-        let statement =
-            { statement with
-                PositionsActive = positionsActive
-                PositionsClosed = positionsClosed }
+            loop statement (shares - positionClosed.Shares)
 
-        let trade = { trade with Shares = trade.Shares + positionActive.Shares }
-
-        processTradeClosing statement trade
-
-    | shares when (shares > 0 && shares < positionActive.Shares) || (shares < 0 && shares > positionActive.Shares)
-        ->
-        let positionsClosed = statement.PositionsClosed |> Set.add positionClosed
-        let positionsActive = statement.PositionsActive |> Set.remove positionActive
-        let positionActive = { positionActive with Shares = positionActive.Shares + trade.Shares }
-        let positionsActive = positionsActive |> Set.add positionActive
-
-        let statement =
-            { statement with
-                PositionsActive = positionsActive
-                PositionsClosed = positionsClosed }
-
-        statement
-
-    | _
-        ->
-        let positionsClosed = statement.PositionsClosed |> Set.add positionClosed
-        let positionsActive = statement.PositionsActive |> Set.remove positionActive
-
-        let statement =
-            { statement with
-                PositionsActive = positionsActive
-                PositionsClosed = positionsClosed }
-
-        statement
+    loop statement trade.Shares
 
 let private processTrade (statement : Statement.Model) (trade : TransactionTrade) =
 
-    let sharesHeld =
-        statement.PositionsActive
-        |> Array.ofSeq
-        |> Array.where (fun x -> x.IssueId = trade.IssueId)
-        |> Array.sumBy (fun x -> x.Shares)
-
-    match sharesHeld with
-    | shares when trade.Shares > 0 && shares >= 0 -> processTradeOpening statement trade
-    | shares when trade.Shares < 0 && shares <= 0 -> processTradeOpening statement trade
-    | shares when trade.Shares < 0 && shares >= -trade.Shares -> processTradeClosing statement trade
-    | shares when trade.Shares > 0 && shares <= -trade.Shares -> processTradeClosing statement trade
-    | _ -> failwith "Unexpected condition."
+    match trade.Activity with
+    | Opening -> processTradeOpening statement trade
+    | Closing -> processTradeClosing statement trade
 
 let private processTransaction (statement : Statement.Model) = function
     | Divid transaction -> processDivid statement transaction
