@@ -11,6 +11,7 @@ type PositionActive =
       Date            : DateTime
       IssueId         : int
       Ticker          : string
+      Position        : string
       Shares          : int
       CostBasis       : decimal }
 
@@ -19,6 +20,7 @@ type PositionClosed =
       Date            : DateTime
       IssueId         : int
       Ticker          : string
+      Position        : string
       Shares          : int
       CostBasis       : decimal
       ExitPrice       : decimal
@@ -39,6 +41,7 @@ let render (statement : Statement.Model) =
           Date          = item.Date
           IssueId       = item.IssueId
           Ticker        = item.IssueId |> mapTicker
+          Position      = item.Position |> sprintf "%A"
           Shares        = item.Shares
           CostBasis     = item.CostBasis }
 
@@ -48,6 +51,7 @@ let render (statement : Statement.Model) =
           Date          = item.Date
           IssueId       = item.IssueId
           Ticker        = item.IssueId |> mapTicker
+          Position      = item.Position |> sprintf "%A"
           Shares        = item.Shares
           CostBasis     = item.CostBasis
           ExitPrice     = item.ExitPrice

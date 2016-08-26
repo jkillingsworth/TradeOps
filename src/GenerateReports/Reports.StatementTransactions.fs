@@ -11,6 +11,8 @@ type Divid =
       Date     : DateTime
       IssueId  : int
       Ticker   : string
+      Position : string
+      Shares   : int
       Amount   : decimal
       PayDate  : DateTime }
 
@@ -19,6 +21,8 @@ type Split =
       Date     : DateTime
       IssueId  : int
       Ticker   : string
+      Position : string
+      Shares   : int
       New      : int
       Old      : int }
 
@@ -27,7 +31,9 @@ type Trade =
       Date     : DateTime
       IssueId  : int
       Ticker   : string
+      Position : string
       Shares   : int
+      Activity : string
       Price    : decimal }
 
 type Model =
@@ -45,6 +51,8 @@ let render (statement : Statement.Model) =
           Date     = item.Date
           IssueId  = item.IssueId
           Ticker   = item.IssueId |> mapTicker
+          Position = item.Position |> sprintf "%A"
+          Shares   = item.Shares
           Amount   = item.Amount
           PayDate  = item.PayDate }
 
@@ -54,6 +62,8 @@ let render (statement : Statement.Model) =
           Date     = item.Date
           IssueId  = item.IssueId
           Ticker   = item.IssueId |> mapTicker
+          Position = item.Position |> sprintf "%A"
+          Shares   = item.Shares
           New      = item.New
           Old      = item.Old }
 
@@ -63,7 +73,9 @@ let render (statement : Statement.Model) =
           Date     = item.Date
           IssueId  = item.IssueId
           Ticker   = item.IssueId |> mapTicker
+          Position = item.Position |> sprintf "%A"
           Shares   = item.Shares
+          Activity = item.Activity |> sprintf "%A"
           Price    = item.Price }
 
     let accumulate model = function

@@ -18,6 +18,7 @@
       <th class="header">Date</th>
       <th class="header">IssueId</th>
       <th class="header">Ticker</th>
+      <th class="detail">Position</th>
       <th class="detail">Shares</th>
       <th class="detail">CostBasis</th>
     </tr>
@@ -28,7 +29,8 @@
       <td class="header">@String.Format("{0:d}", @item.Date)</td>
       <td class="header">@item.IssueId</td>
       <td class="header">@item.Ticker</td>
-      <td class="detail">@String.Format("{0:+#;-#;0}", @item.Shares)</td>
+      <td class="detail">@item.Position</td>
+      <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.CostBasis)</td>
     </tr>
     }
@@ -42,6 +44,7 @@
       <th class="header">Date</th>
       <th class="header">IssueId</th>
       <th class="header">Ticker</th>
+      <th class="detail">Position</th>
       <th class="detail">Shares</th>
       <th class="detail">CostBasis</th>
       <th class="detail">ExitPrice</th>
@@ -56,7 +59,8 @@
       <td class="header">@String.Format("{0:d}", @item.Date)</td>
       <td class="header">@item.IssueId</td>
       <td class="header">@item.Ticker</td>
-      <td class="detail">@String.Format("{0:+#;-#;0}", @item.Shares)</td>
+      <td class="detail">@item.Position</td>
+      <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.CostBasis)</td>
       <td class="detail">@String.Format("{0:n4}", @item.ExitPrice)</td>
       <td class="spacer"></td>

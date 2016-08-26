@@ -18,6 +18,8 @@
       <th class="header">Date</th>
       <th class="header">IssueId</th>
       <th class="header">Ticker</th>
+      <th class="detail">Position</th>
+      <th class="detail">Shares</th>
       <th class="detail">Amount</th>
       <th class="detail">Pay Date</th>
     </tr>
@@ -28,6 +30,8 @@
       <td class="header">@String.Format("{0:d}", @item.Date)</td>
       <td class="header">@item.IssueId</td>
       <td class="header">@item.Ticker</td>
+      <td class="detail">@item.Position</td>
+      <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n5}", @item.Amount)</td>
       <td class="detail">@String.Format("{0:d}", @item.PayDate)</td>
     </tr>
@@ -42,6 +46,8 @@
       <th class="header">Date</th>
       <th class="header">IssueId</th>
       <th class="header">Ticker</th>
+      <th class="detail">Position</th>
+      <th class="detail">Shares</th>
       <th class="detail">New</th>
       <th class="detail">Old</th>
     </tr>
@@ -52,6 +58,8 @@
       <td class="header">@String.Format("{0:d}", @item.Date)</td>
       <td class="header">@item.IssueId</td>
       <td class="header">@item.Ticker</td>
+      <td class="detail">@item.Position</td>
+      <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@item.New</td>
       <td class="detail">@item.Old</td>
     </tr>
@@ -66,7 +74,9 @@
       <th class="header">Date</th>
       <th class="header">IssueId</th>
       <th class="header">Ticker</th>
+      <th class="detail">Position</th>
       <th class="detail">Shares</th>
+      <th class="detail">Activity</th>
       <th class="detail">Price</th>
     </tr>
     @foreach (var item in @Model.Trades)
@@ -76,7 +86,9 @@
       <td class="header">@String.Format("{0:d}", @item.Date)</td>
       <td class="header">@item.IssueId</td>
       <td class="header">@item.Ticker</td>
-      <td class="detail">@String.Format("{0:+#;-#;0}", @item.Shares)</td>
+      <td class="detail">@item.Position</td>
+      <td class="detail">@String.Format("{0}", @item.Shares)</td>
+      <td class="detail">@item.Activity</td>
       <td class="detail">@String.Format("{0:n4}", @item.Price)</td>
     </tr>
     }
