@@ -20,7 +20,7 @@
       <th class="header">Ticker</th>
       <th class="detail">Position</th>
       <th class="detail">Shares</th>
-      <th class="detail">CostBasis</th>
+      <th class="detail">Basis</th>
     </tr>
     @foreach (var item in @Model.PositionsActive)
     {
@@ -31,7 +31,7 @@
       <td class="header">@item.Ticker</td>
       <td class="detail">@item.Position</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
-      <td class="detail">@String.Format("{0:n4}", @item.CostBasis)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
     </tr>
     }
   </table>
@@ -46,11 +46,11 @@
       <th class="header">Ticker</th>
       <th class="detail">Position</th>
       <th class="detail">Shares</th>
-      <th class="detail">CostBasis</th>
-      <th class="detail">ExitPrice</th>
+      <th class="detail">Basis</th>
+      <th class="detail">Price</th>
       <th class="spacer"></th>
-      <th class="header">EntrySequence</th>
-      <th class="header">EntryDate</th>
+      <th class="header">OpeningSequence</th>
+      <th class="header">OpeningDate</th>
     </tr>
     @foreach (var item in @Model.PositionsClosed)
     {
@@ -61,11 +61,11 @@
       <td class="header">@item.Ticker</td>
       <td class="detail">@item.Position</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
-      <td class="detail">@String.Format("{0:n4}", @item.CostBasis)</td>
-      <td class="detail">@String.Format("{0:n4}", @item.ExitPrice)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Price)</td>
       <td class="spacer"></td>
-      <td class="header">@item.EntrySequence</td>
-      <td class="header">@String.Format("{0:d}", @item.EntryDate)</td>
+      <td class="header">@item.OpeningSequence</td>
+      <td class="header">@String.Format("{0:d}", @item.OpeningDate)</td>
     </tr>
     }
   </table>

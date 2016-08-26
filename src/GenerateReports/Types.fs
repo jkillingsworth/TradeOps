@@ -70,7 +70,7 @@ module Statement =
           IssueId         : int
           Position        : Position
           Shares          : int
-          CostBasis       : decimal }
+          Basis           : decimal }
 
     type PositionClosed =
         { Sequence        : int
@@ -78,10 +78,10 @@ module Statement =
           IssueId         : int
           Position        : Position
           Shares          : int
-          CostBasis       : decimal
-          ExitPrice       : decimal
-          EntrySequence   : int
-          EntryDate       : DateTime }
+          Basis           : decimal
+          Price           : decimal
+          OpeningSequence : int
+          OpeningDate     : DateTime }
 
     type Model =
         { Date            : DateTime

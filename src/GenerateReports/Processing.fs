@@ -83,7 +83,7 @@ let private processTradeOpening (statement : Statement.Model) (trade : Transacti
           IssueId      = trade.IssueId
           Position     = trade.Position
           Shares       = trade.Shares
-          CostBasis    = trade.Price }
+          Basis        = trade.Price }
 
     { statement with
         PositionsActive = statement.PositionsActive |> Set.add positionActive }
@@ -105,15 +105,15 @@ let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade)
                 |> Seq.head
 
             let positionClosed : Statement.PositionClosed =
-                { Sequence      = trade.Sequence
-                  Date          = trade.Date
-                  IssueId       = trade.IssueId
-                  Position      = trade.Position
-                  Shares        = min shares positionSubject.Shares
-                  CostBasis     = positionSubject.CostBasis
-                  ExitPrice     = trade.Price
-                  EntrySequence = positionSubject.Sequence
-                  EntryDate     = positionSubject.Date }
+                { Sequence        = trade.Sequence
+                  Date            = trade.Date
+                  IssueId         = trade.IssueId
+                  Position        = trade.Position
+                  Shares          = min shares positionSubject.Shares
+                  Basis           = positionSubject.Basis
+                  Price           = trade.Price
+                  OpeningSequence = positionSubject.Sequence
+                  OpeningDate     = positionSubject.Date }
 
             let positionsClosed = positionsClosed |> Set.add positionClosed
             let positionsActive = positionsActive |> Set.remove positionSubject
