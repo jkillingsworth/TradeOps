@@ -5,43 +5,43 @@ open System
 //-------------------------------------------------------------------------------------------------
 
 type Issue =
-    { IssueId  : int
-      Ticker   : string }
+    { IssueId   : int
+      Ticker    : string }
 
-type Position =
+type Direction =
     | Bullish
     | Bearish
 
-type Activity =
+type Operation =
     | Opening
     | Closing
 
 type TransactionDivid =
-    { Sequence : int
-      Date     : DateTime
-      IssueId  : int
-      Position : Position
-      Shares   : int
-      Amount   : decimal
-      PayDate  : DateTime }
+    { Sequence  : int
+      Date      : DateTime
+      IssueId   : int
+      Direction : Direction
+      Shares    : int
+      Amount    : decimal
+      PayDate   : DateTime }
 
 type TransactionSplit =
-    { Sequence : int
-      Date     : DateTime
-      IssueId  : int
-      Position : Position
-      Shares   : int
-      New      : int
-      Old      : int }
+    { Sequence  : int
+      Date      : DateTime
+      IssueId   : int
+      Direction : Direction
+      Shares    : int
+      New       : int
+      Old       : int }
 
 type TransactionTrade =
-    { Sequence : int
-      Date     : DateTime
-      IssueId  : int
-      Position : Position
-      Shares   : int
-      Activity : Activity
-      Price    : decimal }
+    { Sequence  : int
+      Date      : DateTime
+      IssueId   : int
+      Direction : Direction
+      Shares    : int
+      Operation : Operation
+      Price     : decimal }
 
 type Transaction =
     | Divid of TransactionDivid
@@ -49,9 +49,9 @@ type Transaction =
     | Trade of TransactionTrade
 
 type Stoploss =
-    { Date     : DateTime
-      IssueId  : int
-      Price    : decimal }
+    { Date      : DateTime
+      IssueId   : int
+      Price     : decimal }
 
 //-------------------------------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ module Statement =
         { Sequence        : int
           Date            : DateTime
           IssueId         : int
-          Position        : Position
+          Direction       : Direction
           Shares          : int
           Basis           : decimal }
 
@@ -76,7 +76,7 @@ module Statement =
         { Sequence        : int
           Date            : DateTime
           IssueId         : int
-          Position        : Position
+          Direction       : Direction
           Shares          : int
           Basis           : decimal
           Price           : decimal

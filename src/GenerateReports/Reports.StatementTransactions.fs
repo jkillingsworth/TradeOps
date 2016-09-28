@@ -7,39 +7,39 @@ open TradeOps.Processing
 //-------------------------------------------------------------------------------------------------
 
 type Divid =
-    { Sequence : int
-      Date     : DateTime
-      IssueId  : int
-      Ticker   : string
-      Position : string
-      Shares   : int
-      Amount   : decimal
-      PayDate  : DateTime }
+    { Sequence  : int
+      Date      : DateTime
+      IssueId   : int
+      Ticker    : string
+      Direction : string
+      Shares    : int
+      Amount    : decimal
+      PayDate   : DateTime }
 
 type Split =
-    { Sequence : int
-      Date     : DateTime
-      IssueId  : int
-      Ticker   : string
-      Position : string
-      Shares   : int
-      New      : int
-      Old      : int }
+    { Sequence  : int
+      Date      : DateTime
+      IssueId   : int
+      Ticker    : string
+      Direction : string
+      Shares    : int
+      New       : int
+      Old       : int }
 
 type Trade =
-    { Sequence : int
-      Date     : DateTime
-      IssueId  : int
-      Ticker   : string
-      Position : string
-      Shares   : int
-      Activity : string
-      Price    : decimal }
+    { Sequence  : int
+      Date      : DateTime
+      IssueId   : int
+      Ticker    : string
+      Direction : string
+      Shares    : int
+      Operation : string
+      Price     : decimal }
 
 type Model =
-    { Divids   : Divid[]
-      Splits   : Split[]
-      Trades   : Trade[] }
+    { Divids    : Divid[]
+      Splits    : Split[]
+      Trades    : Trade[] }
 
 //-------------------------------------------------------------------------------------------------
 
@@ -47,36 +47,36 @@ let render (statement : Statement.Model) =
 
     let mapDivid (item : TransactionDivid) : Divid =
 
-        { Sequence = item.Sequence
-          Date     = item.Date
-          IssueId  = item.IssueId
-          Ticker   = item.IssueId |> mapTicker
-          Position = item.Position |> sprintf "%A"
-          Shares   = item.Shares
-          Amount   = item.Amount
-          PayDate  = item.PayDate }
+        { Sequence  = item.Sequence
+          Date      = item.Date
+          IssueId   = item.IssueId
+          Ticker    = item.IssueId |> mapTicker
+          Direction = item.Direction |> sprintf "%A"
+          Shares    = item.Shares
+          Amount    = item.Amount
+          PayDate   = item.PayDate }
 
     let mapSplit (item : TransactionSplit) : Split =
 
-        { Sequence = item.Sequence
-          Date     = item.Date
-          IssueId  = item.IssueId
-          Ticker   = item.IssueId |> mapTicker
-          Position = item.Position |> sprintf "%A"
-          Shares   = item.Shares
-          New      = item.New
-          Old      = item.Old }
+        { Sequence  = item.Sequence
+          Date      = item.Date
+          IssueId   = item.IssueId
+          Ticker    = item.IssueId |> mapTicker
+          Direction = item.Direction |> sprintf "%A"
+          Shares    = item.Shares
+          New       = item.New
+          Old       = item.Old }
 
     let mapTrade (item : TransactionTrade) : Trade =
 
-        { Sequence = item.Sequence
-          Date     = item.Date
-          IssueId  = item.IssueId
-          Ticker   = item.IssueId |> mapTicker
-          Position = item.Position |> sprintf "%A"
-          Shares   = item.Shares
-          Activity = item.Activity |> sprintf "%A"
-          Price    = item.Price }
+        { Sequence  = item.Sequence
+          Date      = item.Date
+          IssueId   = item.IssueId
+          Ticker    = item.IssueId |> mapTicker
+          Direction = item.Direction |> sprintf "%A"
+          Shares    = item.Shares
+          Operation = item.Operation |> sprintf "%A"
+          Price     = item.Price }
 
     let accumulate model = function
         | Divid transaction -> { model with Divids = Array.append model.Divids [| mapDivid transaction |] }

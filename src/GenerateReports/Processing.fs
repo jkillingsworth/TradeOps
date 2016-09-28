@@ -81,7 +81,7 @@ let private processTradeOpening (statement : Statement.Model) (trade : Transacti
         { Sequence     = trade.Sequence
           Date         = trade.Date
           IssueId      = trade.IssueId
-          Position     = trade.Position
+          Direction    = trade.Direction
           Shares       = trade.Shares
           Basis        = trade.Price }
 
@@ -101,14 +101,14 @@ let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade)
                 statement.PositionsActive
                 |> Seq.sortBy (fun x -> x.Sequence)
                 |> Seq.filter (fun x -> x.IssueId = trade.IssueId)
-                |> Seq.filter (fun x -> x.Position = trade.Position)
+                |> Seq.filter (fun x -> x.Direction = trade.Direction)
                 |> Seq.head
 
             let positionClosed : Statement.PositionClosed =
                 { Sequence        = trade.Sequence
                   Date            = trade.Date
                   IssueId         = trade.IssueId
-                  Position        = trade.Position
+                  Direction       = trade.Direction
                   Shares          = min shares positionSubject.Shares
                   Basis           = positionSubject.Basis
                   Price           = trade.Price
@@ -136,7 +136,7 @@ let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade)
 
 let private processTrade (statement : Statement.Model) (trade : TransactionTrade) =
 
-    match trade.Activity with
+    match trade.Operation with
     | Opening -> processTradeOpening statement trade
     | Closing -> processTradeClosing statement trade
 

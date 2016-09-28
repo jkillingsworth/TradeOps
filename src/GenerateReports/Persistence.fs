@@ -110,15 +110,15 @@ module private SelectTransactionsDivid =
 
     let private ofRecord (record : CommandProvider.Record) : TransactionDivid =
 
-        let mapPosition = function
+        let mapDirection = function
             | "Bullish" -> Bullish
             | "Bearish" -> Bearish
-            | erroneous -> failwith ("Invalid position type: " + erroneous)
+            | erroneous -> failwith ("Invalid direction type: " + erroneous)
 
         { Sequence = record.Sequence
           Date     = record.Date
           IssueId  = record.IssueId
-          Position = record.Position |> mapPosition
+          Direction = record.Direction |> mapDirection
           Shares   = record.Shares
           Amount   = record.Amount
           PayDate  = record.PayDate }
@@ -145,18 +145,18 @@ module private SelectTransactionsSplit =
 
     let private ofRecord (record : CommandProvider.Record) : TransactionSplit =
 
-        let mapPosition = function
+        let mapDirection = function
             | "Bullish" -> Bullish
             | "Bearish" -> Bearish
-            | erroneous -> failwith ("Invalid position type: " + erroneous)
+            | erroneous -> failwith ("Invalid direction type: " + erroneous)
 
-        { Sequence = record.Sequence
-          Date     = record.Date
-          IssueId  = record.IssueId
-          Position = record.Position |> mapPosition
-          Shares   = record.Shares
-          New      = record.New
-          Old      = record.Old }
+        { Sequence  = record.Sequence
+          Date      = record.Date
+          IssueId   = record.IssueId
+          Direction = record.Direction |> mapDirection
+          Shares    = record.Shares
+          New       = record.New
+          Old       = record.Old }
 
     let execute date =
         use command = new CommandProvider()
@@ -180,23 +180,23 @@ module private SelectTransactionsTrade =
 
     let private ofRecord (record : CommandProvider.Record) : TransactionTrade =
 
-        let mapPosition = function
+        let mapDirection = function
             | "Bullish" -> Bullish
             | "Bearish" -> Bearish
-            | erroneous -> failwith ("Invalid position type: " + erroneous)
+            | erroneous -> failwith ("Invalid direction type: " + erroneous)
 
-        let mapActivity = function
+        let mapOperation = function
             | "Opening" -> Opening
             | "Closing" -> Closing
-            | erroneous -> failwith ("Invalid activity type: " + erroneous)
+            | erroneous -> failwith ("Invalid operation type: " + erroneous)
 
-        { Sequence = record.Sequence
-          Date     = record.Date
-          IssueId  = record.IssueId
-          Position = record.Position |> mapPosition
-          Shares   = record.Shares
-          Activity = record.Activity |> mapActivity
-          Price    = record.Price }
+        { Sequence  = record.Sequence
+          Date      = record.Date
+          IssueId   = record.IssueId
+          Direction = record.Direction |> mapDirection
+          Shares    = record.Shares
+          Operation = record.Operation |> mapOperation
+          Price     = record.Price }
 
     let execute date =
         use command = new CommandProvider()
