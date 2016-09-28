@@ -105,15 +105,14 @@ let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade)
                 |> Seq.head
 
             let positionClosed : Statement.PositionClosedToday =
-                { Sequence        = trade.Sequence
+                { Reference       = positionSubject.Sequence
+                  Sequence        = trade.Sequence
                   Date            = trade.Date
                   IssueId         = trade.IssueId
                   Direction       = trade.Direction
                   Shares          = min shares positionSubject.Shares
                   Basis           = positionSubject.Basis
-                  Price           = trade.Price
-                  OpeningSequence = positionSubject.Sequence
-                  OpeningDate     = positionSubject.Date }
+                  Price           = trade.Price }
 
             let positionsClosed = positionsClosed |> Set.add positionClosed
             let positionsActive = positionsActive |> Set.remove positionSubject
@@ -153,15 +152,14 @@ let private applyTransaction (statement : Statement.Model) transaction =
 
 let mapClosedTodayToClosedPrior (positionClosedToday : Statement.PositionClosedToday) : Statement.PositionClosedPrior =
 
-    { Sequence        = positionClosedToday.Sequence
+    { Reference       = positionClosedToday.Reference
+      Sequence        = positionClosedToday.Sequence
       Date            = positionClosedToday.Date
       IssueId         = positionClosedToday.IssueId
       Direction       = positionClosedToday.Direction
       Shares          = positionClosedToday.Shares
       Basis           = positionClosedToday.Basis
-      Price           = positionClosedToday.Price
-      OpeningSequence = positionClosedToday.OpeningSequence
-      OpeningDate     = positionClosedToday.OpeningDate }
+      Price           = positionClosedToday.Price }
 
 let computeStatement (statement : Statement.Model) operations : Statement.Model =
 

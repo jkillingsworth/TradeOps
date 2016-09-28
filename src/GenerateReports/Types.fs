@@ -73,26 +73,24 @@ module Statement =
           Basis                : decimal }
 
     type PositionClosedToday =
-        { Sequence             : int
+        { Reference            : int
+          Sequence             : int
           Date                 : DateTime
           IssueId              : int
           Direction            : Direction
           Shares               : int
           Basis                : decimal
-          Price                : decimal
-          OpeningSequence      : int
-          OpeningDate          : DateTime }
+          Price                : decimal }
 
     type PositionClosedPrior =
-        { Sequence             : int
+        { Reference            : int
+          Sequence             : int
           Date                 : DateTime
           IssueId              : int
           Direction            : Direction
           Shares               : int
           Basis                : decimal
-          Price                : decimal
-          OpeningSequence      : int
-          OpeningDate          : DateTime }
+          Price                : decimal }
 
     type Model =
         { Date                 : DateTime

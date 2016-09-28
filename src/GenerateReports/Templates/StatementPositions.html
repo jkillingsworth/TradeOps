@@ -49,13 +49,11 @@
       <th class="detail">Basis</th>
       <th class="detail">Price</th>
       <th class="spacer"></th>
-      <th class="header">OpeningSequence</th>
-      <th class="header">OpeningDate</th>
     </tr>
     @foreach (var item in @Model.PositionsClosedToday)
     {
     <tr>
-      <td class="header">@item.Sequence</td>
+      <td class="header" title="Reference: @item.Reference">@item.Sequence</td>
       <td class="header">@String.Format("{0:d}", @item.Date)</td>
       <td class="header">@item.IssueId</td>
       <td class="header">@item.Ticker</td>
@@ -64,8 +62,6 @@
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Price)</td>
       <td class="spacer"></td>
-      <td class="header">@item.OpeningSequence</td>
-      <td class="header">@String.Format("{0:d}", @item.OpeningDate)</td>
     </tr>
     }
   </table>
@@ -83,13 +79,11 @@
       <th class="detail">Basis</th>
       <th class="detail">Price</th>
       <th class="spacer"></th>
-      <th class="header">OpeningSequence</th>
-      <th class="header">OpeningDate</th>
     </tr>
     @foreach (var item in @Model.PositionsClosedPrior)
     {
     <tr>
-      <td class="header">@item.Sequence</td>
+      <td class="header" title="Reference: @item.Reference">@item.Sequence</td>
       <td class="header">@String.Format("{0:d}", @item.Date)</td>
       <td class="header">@item.IssueId</td>
       <td class="header">@item.Ticker</td>
@@ -98,8 +92,6 @@
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Price)</td>
       <td class="spacer"></td>
-      <td class="header">@item.OpeningSequence</td>
-      <td class="header">@String.Format("{0:d}", @item.OpeningDate)</td>
     </tr>
     }
   </table>
