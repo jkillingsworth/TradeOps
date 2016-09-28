@@ -26,7 +26,7 @@ let render (statement : Statement.Model) =
           Price   = price }
 
     let isActive (issueId, _) =
-        statement.PositionsActive |> Set.exists (fun x -> x.IssueId = issueId)
+        statement.PositionsActiveToday |> Set.exists (fun x -> x.IssueId = issueId)
 
     let stopsActive =
         statement.Stops

@@ -64,35 +64,48 @@ type Operations =
 
 module Statement =
 
-    type PositionActive =
-        { Sequence        : int
-          Date            : DateTime
-          IssueId         : int
-          Direction       : Direction
-          Shares          : int
-          Basis           : decimal }
+    type PositionActiveToday =
+        { Sequence             : int
+          Date                 : DateTime
+          IssueId              : int
+          Direction            : Direction
+          Shares               : int
+          Basis                : decimal }
 
-    type PositionClosed =
-        { Sequence        : int
-          Date            : DateTime
-          IssueId         : int
-          Direction       : Direction
-          Shares          : int
-          Basis           : decimal
-          Price           : decimal
-          OpeningSequence : int
-          OpeningDate     : DateTime }
+    type PositionClosedToday =
+        { Sequence             : int
+          Date                 : DateTime
+          IssueId              : int
+          Direction            : Direction
+          Shares               : int
+          Basis                : decimal
+          Price                : decimal
+          OpeningSequence      : int
+          OpeningDate          : DateTime }
+
+    type PositionClosedPrior =
+        { Sequence             : int
+          Date                 : DateTime
+          IssueId              : int
+          Direction            : Direction
+          Shares               : int
+          Basis                : decimal
+          Price                : decimal
+          OpeningSequence      : int
+          OpeningDate          : DateTime }
 
     type Model =
-        { Date            : DateTime
-          Transactions    : Transaction[]
-          PositionsActive : Set<PositionActive>
-          PositionsClosed : Set<PositionClosed>
-          Stops           : Map<int, decimal> }
+        { Date                 : DateTime
+          Transactions         : Transaction[]
+          PositionsActiveToday : Set<PositionActiveToday>
+          PositionsClosedToday : Set<PositionClosedToday>
+          PositionsClosedPrior : Set<PositionClosedPrior>
+          Stops                : Map<int, decimal> }
 
     let empty =
-        { Date            = DateTime.MinValue
-          Transactions    = Array.empty
-          Stops           = Map.empty
-          PositionsActive = Set.empty
-          PositionsClosed = Set.empty }
+        { Date                 = DateTime.MinValue
+          Transactions         = Array.empty
+          Stops                = Map.empty
+          PositionsActiveToday = Set.empty
+          PositionsClosedToday = Set.empty
+          PositionsClosedPrior = Set.empty }

@@ -6,7 +6,7 @@ open TradeOps.Processing
 
 //-------------------------------------------------------------------------------------------------
 
-type PositionActive =
+type PositionActiveToday =
     { Sequence        : int
       Date            : DateTime
       IssueId         : int
@@ -15,7 +15,19 @@ type PositionActive =
       Shares          : int
       Basis           : decimal }
 
-type PositionClosed =
+type PositionClosedToday =
+    { Sequence        : int
+      Date            : DateTime
+      IssueId         : int
+      Ticker          : string
+      Direction       : string
+      Shares          : int
+      Basis           : decimal
+      Price           : decimal
+      OpeningSequence : int
+      OpeningDate     : DateTime }
+
+type PositionClosedPrior =
     { Sequence        : int
       Date            : DateTime
       IssueId         : int
@@ -28,14 +40,15 @@ type PositionClosed =
       OpeningDate     : DateTime }
 
 type Model =
-    { PositionsActive : PositionActive[]
-      PositionsClosed : PositionClosed[] }
+    { PositionsActiveToday : PositionActiveToday[]
+      PositionsClosedToday : PositionClosedToday[]
+      PositionsClosedPrior : PositionClosedPrior[] }
 
 //-------------------------------------------------------------------------------------------------
 
 let render (statement : Statement.Model) =
 
-    let mapPositionsActive (item : Statement.PositionActive) : PositionActive =
+    let mapPositionsActiveToday (item : Statement.PositionActiveToday) : PositionActiveToday =
 
         { Sequence        = item.Sequence
           Date            = item.Date
@@ -45,7 +58,7 @@ let render (statement : Statement.Model) =
           Shares          = item.Shares
           Basis           = item.Basis }
 
-    let mapPositionsClosed (item : Statement.PositionClosed) : PositionClosed =
+    let mapPositionsClosedToday (item : Statement.PositionClosedToday) : PositionClosedToday =
 
         { Sequence        = item.Sequence
           Date            = item.Date
@@ -58,17 +71,37 @@ let render (statement : Statement.Model) =
           OpeningSequence = item.OpeningSequence
           OpeningDate     = item.OpeningDate }
 
-    let positionsActive =
-        statement.PositionsActive
-        |> Seq.map mapPositionsActive
+    let mapPositionsClosedPrior (item : Statement.PositionClosedPrior) : PositionClosedPrior =
+
+        { Sequence        = item.Sequence
+          Date            = item.Date
+          IssueId         = item.IssueId
+          Ticker          = item.IssueId |> mapTicker
+          Direction       = item.Direction |> sprintf "%A"
+          Shares          = item.Shares
+          Basis           = item.Basis
+          Price           = item.Price
+          OpeningSequence = item.OpeningSequence
+          OpeningDate     = item.OpeningDate }
+
+    let positionsActiveToday =
+        statement.PositionsActiveToday
+        |> Seq.map mapPositionsActiveToday
         |> Seq.sortBy (fun x -> x.IssueId, x.Sequence)
         |> Seq.toArray
 
-    let positionsClosed =
-        statement.PositionsClosed
-        |> Seq.map mapPositionsClosed
+    let positionsClosedToday =
+        statement.PositionsClosedToday
+        |> Seq.map mapPositionsClosedToday
         |> Seq.sortBy (fun x -> x.Sequence, x.OpeningSequence)
         |> Seq.toArray
 
-    { PositionsActive = positionsActive
-      PositionsClosed = positionsClosed }
+    let positionsClosedPrior =
+        statement.PositionsClosedPrior
+        |> Seq.map mapPositionsClosedPrior
+        |> Seq.sortBy (fun x -> x.Sequence, x.OpeningSequence)
+        |> Seq.toArray
+
+    { PositionsActiveToday = positionsActiveToday
+      PositionsClosedToday = positionsClosedToday
+      PositionsClosedPrior = positionsClosedPrior }
