@@ -13,7 +13,8 @@ type PositionActiveToday =
       Ticker          : string
       Direction       : string
       Shares          : int
-      Basis           : decimal }
+      Basis           : decimal
+      Close           : decimal }
 
 type PositionClosedToday =
     { Reference       : int
@@ -24,7 +25,7 @@ type PositionClosedToday =
       Direction       : string
       Shares          : int
       Basis           : decimal
-      Price           : decimal }
+      Close           : decimal }
 
 type PositionClosedPrior =
     { Reference       : int
@@ -35,7 +36,7 @@ type PositionClosedPrior =
       Direction       : string
       Shares          : int
       Basis           : decimal
-      Price           : decimal }
+      Close           : decimal }
 
 type Model =
     { PositionsActiveToday : PositionActiveToday[]
@@ -54,7 +55,8 @@ let render (statement : Statement.Model) =
           Ticker          = item.IssueId |> mapTicker
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
-          Basis           = item.Basis }
+          Basis           = item.Basis
+          Close           = item.Close }
 
     let mapPositionsClosedToday (item : Statement.PositionClosedToday) : PositionClosedToday =
 
@@ -66,7 +68,7 @@ let render (statement : Statement.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
-          Price           = item.Price }
+          Close           = item.Close }
 
     let mapPositionsClosedPrior (item : Statement.PositionClosedPrior) : PositionClosedPrior =
 
@@ -78,7 +80,7 @@ let render (statement : Statement.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
-          Price           = item.Price }
+          Close           = item.Close }
 
     let positionsActiveToday =
         statement.PositionsActiveToday

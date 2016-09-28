@@ -83,7 +83,8 @@ let private processTradeOpening (statement : Statement.Model) (trade : Transacti
           IssueId      = trade.IssueId
           Direction    = trade.Direction
           Shares       = trade.Shares
-          Basis        = trade.Price }
+          Basis        = trade.Price
+          Close        = trade.Price }
 
     { statement with
         PositionsActiveToday = statement.PositionsActiveToday |> Set.add positionActive }
@@ -112,7 +113,7 @@ let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade)
                   Direction       = trade.Direction
                   Shares          = min shares positionSubject.Shares
                   Basis           = positionSubject.Basis
-                  Price           = trade.Price }
+                  Close           = trade.Price }
 
             let positionsClosed = positionsClosed |> Set.add positionClosed
             let positionsActive = positionsActive |> Set.remove positionSubject
@@ -159,7 +160,12 @@ let mapClosedTodayToClosedPrior (positionClosedToday : Statement.PositionClosedT
       Direction       = positionClosedToday.Direction
       Shares          = positionClosedToday.Shares
       Basis           = positionClosedToday.Basis
-      Price           = positionClosedToday.Price }
+      Close           = positionClosedToday.Close }
+
+let mapClosePrice date (positionActiveToday : Statement.PositionActiveToday) =
+
+    let quote = Persistence.selectQuote positionActiveToday.IssueId date
+    { positionActiveToday with Close = quote.Close }
 
 let computeStatement (statement : Statement.Model) operations : Statement.Model =
 
@@ -173,6 +179,7 @@ let computeStatement (statement : Statement.Model) operations : Statement.Model 
     let statement = { statement with Stops = operations.Stoplosses |> Array.fold updateStop statement.Stops }
     let statement = { statement with PositionsClosedPrior = appendPrev statement }
     let statement = { statement with PositionsClosedToday = Set.empty }
+    let statement = operations.Transactions |> Array.fold applyTransaction statement
+    let statement = { statement with PositionsActiveToday = statement.PositionsActiveToday |> Set.map (mapClosePrice statement.Date) }
 
-    operations.Transactions
-    |> Array.fold applyTransaction statement
+    statement

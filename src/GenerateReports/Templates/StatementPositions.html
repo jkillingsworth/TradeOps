@@ -21,6 +21,8 @@
       <th class="detail">Direction</th>
       <th class="detail">Shares</th>
       <th class="detail">Basis</th>
+      <th class="spacer"></th>
+      <th class="detail">Close</th>
     </tr>
     @foreach (var item in @Model.PositionsActiveToday)
     {
@@ -32,6 +34,8 @@
       <td class="detail">@item.Direction</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
+      <td class="spacer"></td>
+      <td class="detail">@String.Format("{0:n4}", @item.Close)</td>
     </tr>
     }
   </table>
@@ -47,8 +51,8 @@
       <th class="detail">Direction</th>
       <th class="detail">Shares</th>
       <th class="detail">Basis</th>
-      <th class="detail">Price</th>
       <th class="spacer"></th>
+      <th class="detail">Close</th>
     </tr>
     @foreach (var item in @Model.PositionsClosedToday)
     {
@@ -60,8 +64,8 @@
       <td class="detail">@item.Direction</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
-      <td class="detail">@String.Format("{0:n4}", @item.Price)</td>
       <td class="spacer"></td>
+      <td class="detail">@String.Format("{0:n4}", @item.Close)</td>
     </tr>
     }
   </table>
@@ -77,8 +81,8 @@
       <th class="detail">Direction</th>
       <th class="detail">Shares</th>
       <th class="detail">Basis</th>
-      <th class="detail">Price</th>
       <th class="spacer"></th>
+      <th class="detail">Close</th>
     </tr>
     @foreach (var item in @Model.PositionsClosedPrior)
     {
@@ -90,8 +94,8 @@
       <td class="detail">@item.Direction</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
-      <td class="detail">@String.Format("{0:n4}", @item.Price)</td>
       <td class="spacer"></td>
+      <td class="detail">@String.Format("{0:n4}", @item.Close)</td>
     </tr>
     }
   </table>

@@ -58,6 +58,31 @@ let selectIssues =
 
 //-------------------------------------------------------------------------------------------------
 
+module private SelectQuote =
+
+    [<Literal>]
+    let private sql = @"..\..\sql\Quotes\SelectQuote.sql"
+
+    type CommandProvider = SqlCommandProvider<sql, connectionNameQuotes, ConfigFile = configFile>
+
+    let private ofRecord (record : CommandProvider.Record) : Quote =
+
+        { IssueId = record.IssueId
+          Date    = record.Date
+          Close   = record.Close }
+
+    let execute issueId date =
+        use command = new CommandProvider()
+        let records = command.Execute(issueId, date)
+        records
+        |> Seq.map ofRecord
+        |> Seq.exactlyOne
+
+let selectQuote =
+    SelectQuote.execute
+
+//-------------------------------------------------------------------------------------------------
+
 module private SelectStartDate =
 
     [<Literal>]

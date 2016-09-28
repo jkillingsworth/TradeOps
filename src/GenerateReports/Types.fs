@@ -8,6 +8,11 @@ type Issue =
     { IssueId   : int
       Ticker    : string }
 
+type Quote =
+    { IssueId   : int
+      Date      : DateTime
+      Close     : decimal }
+
 type Direction =
     | Bullish
     | Bearish
@@ -70,7 +75,8 @@ module Statement =
           IssueId              : int
           Direction            : Direction
           Shares               : int
-          Basis                : decimal }
+          Basis                : decimal
+          Close                : decimal }
 
     type PositionClosedToday =
         { Reference            : int
@@ -80,7 +86,7 @@ module Statement =
           Direction            : Direction
           Shares               : int
           Basis                : decimal
-          Price                : decimal }
+          Close                : decimal }
 
     type PositionClosedPrior =
         { Reference            : int
@@ -90,7 +96,7 @@ module Statement =
           Direction            : Direction
           Shares               : int
           Basis                : decimal
-          Price                : decimal }
+          Close                : decimal }
 
     type Model =
         { Date                 : DateTime
