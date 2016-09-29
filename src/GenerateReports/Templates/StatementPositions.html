@@ -23,6 +23,8 @@
       <th class="detail">Basis</th>
       <th class="spacer"></th>
       <th class="detail">Close</th>
+      <th class="detail">Upper</th>
+      <th class="detail">Lower</th>
       <th class="detail">Delta</th>
     </tr>
     @foreach (var item in @Model.PositionsActiveToday)
@@ -37,6 +39,8 @@
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
       <td class="spacer"></td>
       <td class="detail">@String.Format("{0:n4}", @item.Close)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Upper)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Lower)</td>
       <td class="detail">@String.Format("{0:+0.0000;-0.0000;0.0000}", @item.Delta)</td>
     </tr>
     }
@@ -55,6 +59,8 @@
       <th class="detail">Basis</th>
       <th class="spacer"></th>
       <th class="detail">Close</th>
+      <th class="detail">Upper</th>
+      <th class="detail">Lower</th>
       <th class="detail">Delta</th>
     </tr>
     @foreach (var item in @Model.PositionsClosedToday)
@@ -69,6 +75,8 @@
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
       <td class="spacer"></td>
       <td class="detail">@String.Format("{0:n4}", @item.Close)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Upper)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Lower)</td>
       <td class="detail">@String.Format("{0:+0.0000;-0.0000;0.0000}", @item.Delta)</td>
     </tr>
     }

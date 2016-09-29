@@ -69,6 +69,8 @@ module private SelectQuote =
 
         { IssueId = record.IssueId
           Date    = record.Date
+          Hi      = record.Hi
+          Lo      = record.Lo
           Close   = record.Close }
 
     let execute issueId date =

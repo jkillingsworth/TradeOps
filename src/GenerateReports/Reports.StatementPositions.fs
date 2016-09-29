@@ -15,6 +15,8 @@ type PositionActiveToday =
       Shares          : int
       Basis           : decimal
       Close           : decimal
+      Upper           : decimal
+      Lower           : decimal
       Delta           : decimal }
 
 type PositionClosedToday =
@@ -27,6 +29,8 @@ type PositionClosedToday =
       Shares          : int
       Basis           : decimal
       Close           : decimal
+      Upper           : decimal
+      Lower           : decimal
       Delta           : decimal }
 
 type PositionClosedPrior =
@@ -59,6 +63,8 @@ let render (statement : Statement.Model) =
           Shares          = item.Shares
           Basis           = item.Basis
           Close           = item.Close
+          Upper           = item.Upper
+          Lower           = item.Lower
           Delta           = item.Delta }
 
     let mapPositionsClosedToday (item : Statement.PositionClosedToday) : PositionClosedToday =
@@ -72,6 +78,8 @@ let render (statement : Statement.Model) =
           Shares          = item.Shares
           Basis           = item.Basis
           Close           = item.Close
+          Upper           = item.Upper
+          Lower           = item.Lower
           Delta           = item.Delta }
 
     let mapPositionsClosedPrior (item : Statement.PositionClosedPrior) : PositionClosedPrior =

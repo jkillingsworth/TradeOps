@@ -11,6 +11,8 @@ type Issue =
 type Quote =
     { IssueId   : int
       Date      : DateTime
+      Hi        : decimal
+      Lo        : decimal
       Close     : decimal }
 
 type Direction =
@@ -77,6 +79,8 @@ module Statement =
           Shares               : int
           Basis                : decimal
           Close                : decimal
+          Upper                : decimal
+          Lower                : decimal
           Delta                : decimal }
 
     type PositionClosedToday =
@@ -88,6 +92,8 @@ module Statement =
           Shares               : int
           Basis                : decimal
           Close                : decimal
+          Upper                : decimal
+          Lower                : decimal
           Delta                : decimal }
 
     type PositionClosedPrior =

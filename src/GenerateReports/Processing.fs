@@ -85,6 +85,8 @@ let private processTradeOpening (statement : Statement.Model) (trade : Transacti
           Shares       = trade.Shares
           Basis        = trade.Price
           Close        = trade.Price
+          Upper        = trade.Price
+          Lower        = trade.Price
           Delta        = Decimal.Zero }
 
     { statement with
@@ -92,10 +94,22 @@ let private processTradeOpening (statement : Statement.Model) (trade : Transacti
 
 let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade) =
 
+    let computeUpper quote =
+        match trade.Direction, statement.Stops.[trade.IssueId] with
+        | Bullish, stop -> quote.Hi
+        | Bearish, stop -> quote.Hi |> min stop |> max trade.Price
+
+    let computeLower quote =
+        match trade.Direction, statement.Stops.[trade.IssueId] with
+        | Bearish, stop -> quote.Lo
+        | Bullish, stop -> quote.Lo |> max stop |> min trade.Price
+
     let rec loop (statement : Statement.Model) = function
         | shares when shares = 0 -> statement
         | shares
             ->
+            let quote = Persistence.selectQuote trade.IssueId statement.Date
+
             let positionsActive = statement.PositionsActiveToday
             let positionsClosed = statement.PositionsClosedToday
 
@@ -115,6 +129,8 @@ let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade)
                   Shares          = min shares positionSubject.Shares
                   Basis           = positionSubject.Basis
                   Close           = trade.Price
+                  Upper           = computeUpper quote
+                  Lower           = computeLower quote
                   Delta           = trade.Price - positionSubject.Close }
 
             let positionsClosed = positionsClosed |> Set.add positionClosed
@@ -168,10 +184,14 @@ let mapClosePrice date (positionActiveToday : Statement.PositionActiveToday) =
 
     let quote = Persistence.selectQuote positionActiveToday.IssueId date
     let close = quote.Close
+    let upper = quote.Hi
+    let lower = quote.Lo
     let delta = close - positionActiveToday.Close
 
     { positionActiveToday with
         Close = close
+        Upper = upper
+        Lower = lower
         Delta = delta }
 
 let computeStatement (statement : Statement.Model) operations : Statement.Model =
