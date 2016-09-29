@@ -62,7 +62,7 @@ type Stoploss =
 
 //-------------------------------------------------------------------------------------------------
 
-type Operations =
+type Adjustments =
     { Date         : DateTime
       Transactions : Transaction[]
       Stoplosses   : Stoploss[] }

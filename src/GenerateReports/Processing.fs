@@ -47,7 +47,7 @@ let mapTicker issueId =
 
 //-------------------------------------------------------------------------------------------------
 
-let getOperations date : Operations =
+let getAdjustments date : Adjustments =
 
     let transactions =
         [ Persistence.selectTransactionsDivid date
@@ -194,7 +194,7 @@ let mapEndOfDayValues date (positionActiveToday : Intermediate.PositionActiveTod
         Lower = lower
         Delta = delta }
 
-let computeIntermediate (intermediate : Intermediate.Model) operations : Intermediate.Model =
+let computeIntermediate (intermediate : Intermediate.Model) adjustments : Intermediate.Model =
 
     let updateStop stops stoploss = stops |> Map.add stoploss.IssueId stoploss.Price
     let appendPrev (intermediate : Intermediate.Model) =
@@ -202,11 +202,11 @@ let computeIntermediate (intermediate : Intermediate.Model) operations : Interme
         |> Set.map mapClosedTodayToClosedPrior
         |> Set.union intermediate.PositionsClosedPrior
 
-    let intermediate = { intermediate with Date  = operations.Date }
-    let intermediate = { intermediate with Stops = operations.Stoplosses |> Array.fold updateStop intermediate.Stops }
+    let intermediate = { intermediate with Date = adjustments.Date }
+    let intermediate = { intermediate with Stops = adjustments.Stoplosses |> Array.fold updateStop intermediate.Stops }
     let intermediate = { intermediate with PositionsClosedPrior = appendPrev intermediate }
     let intermediate = { intermediate with PositionsClosedToday = Set.empty }
-    let intermediate = operations.Transactions |> Array.fold applyTransaction intermediate
+    let intermediate = adjustments.Transactions |> Array.fold applyTransaction intermediate
     let intermediate = { intermediate with PositionsActiveToday = intermediate.PositionsActiveToday |> Set.map (mapEndOfDayValues intermediate.Date) }
 
     intermediate

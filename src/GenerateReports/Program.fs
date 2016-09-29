@@ -13,7 +13,7 @@ let generateReports dateFinal =
     let intermediates =
         dateFinal
         |> Processing.generateDates
-        |> Observable.map Processing.getOperations
+        |> Observable.map Processing.getAdjustments
         |> Observable.scanInit Intermediate.empty Processing.computeIntermediate
         |> Observable.publish
 
