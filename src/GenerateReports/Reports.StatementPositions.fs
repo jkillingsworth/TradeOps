@@ -7,42 +7,42 @@ open TradeOps.Processing
 //-------------------------------------------------------------------------------------------------
 
 type PositionActiveToday =
-    { Sequence        : int
-      Date            : DateTime
-      IssueId         : int
-      Ticker          : string
-      Direction       : string
-      Shares          : int
-      Basis           : decimal
-      Final           : decimal
-      Upper           : decimal
-      Lower           : decimal
-      Delta           : decimal }
+    { Sequence             : int
+      Date                 : DateTime
+      IssueId              : int
+      Ticker               : string
+      Direction            : string
+      Shares               : int
+      Basis                : decimal
+      Final                : decimal
+      Upper                : decimal
+      Lower                : decimal
+      Delta                : decimal }
 
 type PositionClosedToday =
-    { Reference       : int
-      Sequence        : int
-      Date            : DateTime
-      IssueId         : int
-      Ticker          : string
-      Direction       : string
-      Shares          : int
-      Basis           : decimal
-      Final           : decimal
-      Upper           : decimal
-      Lower           : decimal
-      Delta           : decimal }
+    { Reference            : int
+      Sequence             : int
+      Date                 : DateTime
+      IssueId              : int
+      Ticker               : string
+      Direction            : string
+      Shares               : int
+      Basis                : decimal
+      Final                : decimal
+      Upper                : decimal
+      Lower                : decimal
+      Delta                : decimal }
 
 type PositionClosedPrior =
-    { Reference       : int
-      Sequence        : int
-      Date            : DateTime
-      IssueId         : int
-      Ticker          : string
-      Direction       : string
-      Shares          : int
-      Basis           : decimal
-      Final           : decimal }
+    { Reference            : int
+      Sequence             : int
+      Date                 : DateTime
+      IssueId              : int
+      Ticker               : string
+      Direction            : string
+      Shares               : int
+      Basis                : decimal
+      Final                : decimal }
 
 type Model =
     { PositionsActiveToday : PositionActiveToday[]

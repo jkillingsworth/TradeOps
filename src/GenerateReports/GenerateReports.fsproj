@@ -67,14 +67,14 @@
     <Content Include="packages.config" />
     <EmbeddedResource Include="Templates\Report.css" />
     <EmbeddedResource Include="Templates\StatementTransactions.html" />
-    <EmbeddedResource Include="Templates\StatementPositions.html" />
     <EmbeddedResource Include="Templates\StatementStops.html" />
+    <EmbeddedResource Include="Templates\StatementPositions.html" />
     <Compile Include="Types.fs" />
     <Compile Include="Persistence.fs" />
     <Compile Include="Processing.fs" />
     <Compile Include="Reports.StatementTransactions.fs" />
-    <Compile Include="Reports.StatementPositions.fs" />
     <Compile Include="Reports.StatementStops.fs" />
+    <Compile Include="Reports.StatementPositions.fs" />
     <Compile Include="Output.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

@@ -47,8 +47,8 @@ let private write model (filenameOutput : string) =
 let writeStatementTransactions (model : StatementTransactions.Model) =
     write model "StatementTransactions.html"
 
-let writeStatementPositions (model : StatementPositions.Model) =
-    write model "StatementPositions.html"
-
 let writeStatementStops (model : StatementStops.Model) =
     write model "StatementStops.html"
+
+let writeStatementPositions (model : StatementPositions.Model) =
+    write model "StatementPositions.html"
