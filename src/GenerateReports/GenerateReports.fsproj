@@ -71,6 +71,7 @@
     <EmbeddedResource Include="Templates\IntermediatePositions.html" />
     <Compile Include="Types.fs" />
     <Compile Include="Persistence.fs" />
+    <Compile Include="Intermediate.fs" />
     <Compile Include="Processing.fs" />
     <Compile Include="Reports.IntermediateTransactions.fs" />
     <Compile Include="Reports.IntermediateStops.fs" />

@@ -1,6 +1,7 @@
 ﻿module TradeOps.Reports.IntermediateStops
 
 open System
+open TradeOps
 open TradeOps.Types
 open TradeOps.Processing
 
