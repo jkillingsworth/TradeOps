@@ -10,33 +10,33 @@ open TradeOps.Reports
 
 let generateReports dateFinal =
 
-    let statements =
+    let intermediates =
         dateFinal
         |> Processing.generateDates
         |> Observable.map Processing.getOperations
-        |> Observable.scanInit Statement.empty Processing.computeStatement
+        |> Observable.scanInit Intermediate.empty Processing.computeIntermediate
         |> Observable.publish
 
     use subscription =
-        statements
+        intermediates
         |> Observable.last
-        |> Observable.map StatementTransactions.render
-        |> Observable.subscribe Output.writeStatementTransactions
+        |> Observable.map IntermediateTransactions.render
+        |> Observable.subscribe Output.writeIntermediateTransactions
 
     use subscription =
-        statements
+        intermediates
         |> Observable.last
-        |> Observable.map StatementStops.render
-        |> Observable.subscribe Output.writeStatementStops
+        |> Observable.map IntermediateStops.render
+        |> Observable.subscribe Output.writeIntermediateStops
 
     use subscription =
-        statements
+        intermediates
         |> Observable.last
-        |> Observable.map StatementPositions.render
-        |> Observable.subscribe Output.writeStatementPositions
+        |> Observable.map IntermediatePositions.render
+        |> Observable.subscribe Output.writeIntermediatePositions
 
     use connection =
-        statements
+        intermediates
         |> Observable.connect
 
     ()

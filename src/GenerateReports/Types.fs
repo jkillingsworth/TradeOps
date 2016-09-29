@@ -69,7 +69,7 @@ type Operations =
 
 //-------------------------------------------------------------------------------------------------
 
-module Statement =
+module Intermediate =
 
     type PositionActiveToday =
         { Sequence             : int

@@ -1,4 +1,4 @@
-﻿module TradeOps.Reports.StatementTransactions
+﻿module TradeOps.Reports.IntermediateTransactions
 
 open System
 open TradeOps.Types
@@ -43,7 +43,7 @@ type Model =
 
 //-------------------------------------------------------------------------------------------------
 
-let render (statement : Statement.Model) =
+let render (intermediate : Intermediate.Model) =
 
     let mapDivid (item : TransactionDivid) : Divid =
 
@@ -88,4 +88,4 @@ let render (statement : Statement.Model) =
           Splits = Array.empty
           Trades = Array.empty }
 
-    statement.Transactions |> Array.fold accumulate model
+    intermediate.Transactions |> Array.fold accumulate model

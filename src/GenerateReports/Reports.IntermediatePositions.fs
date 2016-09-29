@@ -1,4 +1,4 @@
-﻿module TradeOps.Reports.StatementPositions
+﻿module TradeOps.Reports.IntermediatePositions
 
 open System
 open TradeOps.Types
@@ -51,9 +51,9 @@ type Model =
 
 //-------------------------------------------------------------------------------------------------
 
-let render (statement : Statement.Model) =
+let render (intermediate : Intermediate.Model) =
 
-    let mapPositionsActiveToday (item : Statement.PositionActiveToday) : PositionActiveToday =
+    let mapPositionsActiveToday (item : Intermediate.PositionActiveToday) : PositionActiveToday =
 
         { Sequence        = item.Sequence
           Date            = item.Date
@@ -67,7 +67,7 @@ let render (statement : Statement.Model) =
           Lower           = item.Lower
           Delta           = item.Delta }
 
-    let mapPositionsClosedToday (item : Statement.PositionClosedToday) : PositionClosedToday =
+    let mapPositionsClosedToday (item : Intermediate.PositionClosedToday) : PositionClosedToday =
 
         { Reference       = item.Reference
           Sequence        = item.Sequence
@@ -82,7 +82,7 @@ let render (statement : Statement.Model) =
           Lower           = item.Lower
           Delta           = item.Delta }
 
-    let mapPositionsClosedPrior (item : Statement.PositionClosedPrior) : PositionClosedPrior =
+    let mapPositionsClosedPrior (item : Intermediate.PositionClosedPrior) : PositionClosedPrior =
 
         { Reference       = item.Reference
           Sequence        = item.Sequence
@@ -95,19 +95,19 @@ let render (statement : Statement.Model) =
           Final           = item.Final }
 
     let positionsActiveToday =
-        statement.PositionsActiveToday
+        intermediate.PositionsActiveToday
         |> Seq.map mapPositionsActiveToday
         |> Seq.sortBy (fun x -> x.IssueId, x.Sequence)
         |> Seq.toArray
 
     let positionsClosedToday =
-        statement.PositionsClosedToday
+        intermediate.PositionsClosedToday
         |> Seq.map mapPositionsClosedToday
         |> Seq.sortBy (fun x -> x.Sequence, x.Reference)
         |> Seq.toArray
 
     let positionsClosedPrior =
-        statement.PositionsClosedPrior
+        intermediate.PositionsClosedPrior
         |> Seq.map mapPositionsClosedPrior
         |> Seq.sortBy (fun x -> x.Sequence, x.Reference)
         |> Seq.toArray

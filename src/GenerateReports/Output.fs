@@ -44,11 +44,11 @@ let private write model (filenameOutput : string) =
 
 //-------------------------------------------------------------------------------------------------
 
-let writeStatementTransactions (model : StatementTransactions.Model) =
-    write model "StatementTransactions.html"
+let writeIntermediateTransactions (model : IntermediateTransactions.Model) =
+    write model "IntermediateTransactions.html"
 
-let writeStatementStops (model : StatementStops.Model) =
-    write model "StatementStops.html"
+let writeIntermediateStops (model : IntermediateStops.Model) =
+    write model "IntermediateStops.html"
 
-let writeStatementPositions (model : StatementPositions.Model) =
-    write model "StatementPositions.html"
+let writeIntermediatePositions (model : IntermediatePositions.Model) =
+    write model "IntermediatePositions.html"

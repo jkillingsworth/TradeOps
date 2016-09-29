@@ -1,4 +1,4 @@
-﻿module TradeOps.Reports.StatementStops
+﻿module TradeOps.Reports.IntermediateStops
 
 open System
 open TradeOps.Types
@@ -17,7 +17,7 @@ type Model =
 
 //-------------------------------------------------------------------------------------------------
 
-let render (statement : Statement.Model) =
+let render (intermediate : Intermediate.Model) =
 
     let mapStop (issueId, price) : Stop =
 
@@ -26,10 +26,10 @@ let render (statement : Statement.Model) =
           Price   = price }
 
     let isActive (issueId, _) =
-        statement.PositionsActiveToday |> Set.exists (fun x -> x.IssueId = issueId)
+        intermediate.PositionsActiveToday |> Set.exists (fun x -> x.IssueId = issueId)
 
     let stopsActive =
-        statement.Stops
+        intermediate.Stops
         |> Map.toSeq
         |> Seq.filter (isActive >> id)
         |> Seq.map mapStop
@@ -37,7 +37,7 @@ let render (statement : Statement.Model) =
         |> Seq.toArray
 
     let stopsClosed =
-        statement.Stops
+        intermediate.Stops
         |> Map.toSeq
         |> Seq.filter (isActive >> not)
         |> Seq.map mapStop

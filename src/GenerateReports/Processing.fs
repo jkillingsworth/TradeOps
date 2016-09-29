@@ -67,17 +67,17 @@ let getOperations date : Operations =
 
 //-------------------------------------------------------------------------------------------------
 
-let private processDivid (statement : Statement.Model) (divid : TransactionDivid) =
+let private processDivid (intermediate : Intermediate.Model) (divid : TransactionDivid) =
 
-    statement
+    intermediate
 
-let private processSplit (statement : Statement.Model) (split : TransactionSplit) =
+let private processSplit (intermediate : Intermediate.Model) (split : TransactionSplit) =
 
-    statement
+    intermediate
 
-let private processTradeOpening (statement : Statement.Model) (trade : TransactionTrade) =
+let private processTradeOpening (intermediate : Intermediate.Model) (trade : TransactionTrade) =
 
-    let positionActive : Statement.PositionActiveToday =
+    let positionActive : Intermediate.PositionActiveToday =
         { Sequence     = trade.Sequence
           Date         = trade.Date
           IssueId      = trade.IssueId
@@ -89,38 +89,38 @@ let private processTradeOpening (statement : Statement.Model) (trade : Transacti
           Lower        = trade.Price
           Delta        = Decimal.Zero }
 
-    { statement with
-        PositionsActiveToday = statement.PositionsActiveToday |> Set.add positionActive }
+    { intermediate with
+        PositionsActiveToday = intermediate.PositionsActiveToday |> Set.add positionActive }
 
-let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade) =
+let processTradeClosing (intermediate : Intermediate.Model) (trade : TransactionTrade) =
 
     let computeUpper quote =
-        match trade.Direction, statement.Stops.[trade.IssueId] with
+        match trade.Direction, intermediate.Stops.[trade.IssueId] with
         | Bullish, stop -> quote.Hi
         | Bearish, stop -> quote.Hi |> min stop |> max trade.Price
 
     let computeLower quote =
-        match trade.Direction, statement.Stops.[trade.IssueId] with
+        match trade.Direction, intermediate.Stops.[trade.IssueId] with
         | Bearish, stop -> quote.Lo
         | Bullish, stop -> quote.Lo |> max stop |> min trade.Price
 
-    let rec loop (statement : Statement.Model) = function
-        | shares when shares = 0 -> statement
+    let rec loop (intermediate : Intermediate.Model) = function
+        | shares when shares = 0 -> intermediate
         | shares
             ->
-            let quote = Persistence.selectQuote trade.IssueId statement.Date
+            let quote = Persistence.selectQuote trade.IssueId intermediate.Date
 
-            let positionsActive = statement.PositionsActiveToday
-            let positionsClosed = statement.PositionsClosedToday
+            let positionsActive = intermediate.PositionsActiveToday
+            let positionsClosed = intermediate.PositionsClosedToday
 
             let positionSubject =
-                statement.PositionsActiveToday
+                intermediate.PositionsActiveToday
                 |> Seq.sortBy (fun x -> x.Sequence)
                 |> Seq.filter (fun x -> x.IssueId = trade.IssueId)
                 |> Seq.filter (fun x -> x.Direction = trade.Direction)
                 |> Seq.head
 
-            let positionClosed : Statement.PositionClosedToday =
+            let positionClosed : Intermediate.PositionClosedToday =
                 { Reference       = positionSubject.Sequence
                   Sequence        = trade.Sequence
                   Date            = trade.Date
@@ -136,40 +136,40 @@ let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade)
             let positionsClosed = positionsClosed |> Set.add positionClosed
             let positionsActive = positionsActive |> Set.remove positionSubject
 
-            let statement =
+            let intermediate =
                 if positionSubject.Shares > shares then
                     let positionSubject = { positionSubject with Shares = positionSubject.Shares - shares }
                     let positionsActive = positionsActive |> Set.add positionSubject
-                    { statement with
+                    { intermediate with
                         PositionsActiveToday = positionsActive
                         PositionsClosedToday = positionsClosed }
                 else
-                    { statement with
+                    { intermediate with
                         PositionsActiveToday = positionsActive
                         PositionsClosedToday = positionsClosed }
 
-            loop statement (shares - positionClosed.Shares)
+            loop intermediate (shares - positionClosed.Shares)
 
-    loop statement trade.Shares
+    loop intermediate trade.Shares
 
-let private processTrade (statement : Statement.Model) (trade : TransactionTrade) =
+let private processTrade (intermediate : Intermediate.Model) (trade : TransactionTrade) =
 
     match trade.Operation with
-    | Opening -> processTradeOpening statement trade
-    | Closing -> processTradeClosing statement trade
+    | Opening -> processTradeOpening intermediate trade
+    | Closing -> processTradeClosing intermediate trade
 
-let private processTransaction (statement : Statement.Model) = function
-    | Divid transaction -> processDivid statement transaction
-    | Split transaction -> processSplit statement transaction
-    | Trade transaction -> processTrade statement transaction
+let private processTransaction (intermediate : Intermediate.Model) = function
+    | Divid transaction -> processDivid intermediate transaction
+    | Split transaction -> processSplit intermediate transaction
+    | Trade transaction -> processTrade intermediate transaction
 
-let private applyTransaction (statement : Statement.Model) transaction =
+let private applyTransaction (intermediate : Intermediate.Model) transaction =
 
-    let statement = processTransaction statement transaction
-    let transactions = [| transaction |] |> Array.append statement.Transactions
-    { statement with Transactions = transactions }
+    let intermediate = processTransaction intermediate transaction
+    let transactions = [| transaction |] |> Array.append intermediate.Transactions
+    { intermediate with Transactions = transactions }
 
-let mapClosedTodayToClosedPrior (positionClosedToday : Statement.PositionClosedToday) : Statement.PositionClosedPrior =
+let mapClosedTodayToClosedPrior (positionClosedToday : Intermediate.PositionClosedToday) : Intermediate.PositionClosedPrior =
 
     { Reference       = positionClosedToday.Reference
       Sequence        = positionClosedToday.Sequence
@@ -180,7 +180,7 @@ let mapClosedTodayToClosedPrior (positionClosedToday : Statement.PositionClosedT
       Basis           = positionClosedToday.Basis
       Final           = positionClosedToday.Final }
 
-let mapEndOfDayValues date (positionActiveToday : Statement.PositionActiveToday) =
+let mapEndOfDayValues date (positionActiveToday : Intermediate.PositionActiveToday) =
 
     let quote = Persistence.selectQuote positionActiveToday.IssueId date
     let final = quote.Close
@@ -194,19 +194,19 @@ let mapEndOfDayValues date (positionActiveToday : Statement.PositionActiveToday)
         Lower = lower
         Delta = delta }
 
-let computeStatement (statement : Statement.Model) operations : Statement.Model =
+let computeIntermediate (intermediate : Intermediate.Model) operations : Intermediate.Model =
 
     let updateStop stops stoploss = stops |> Map.add stoploss.IssueId stoploss.Price
-    let appendPrev (statement : Statement.Model) =
-        statement.PositionsClosedToday
+    let appendPrev (intermediate : Intermediate.Model) =
+        intermediate.PositionsClosedToday
         |> Set.map mapClosedTodayToClosedPrior
-        |> Set.union statement.PositionsClosedPrior
+        |> Set.union intermediate.PositionsClosedPrior
 
-    let statement = { statement with Date  = operations.Date }
-    let statement = { statement with Stops = operations.Stoplosses |> Array.fold updateStop statement.Stops }
-    let statement = { statement with PositionsClosedPrior = appendPrev statement }
-    let statement = { statement with PositionsClosedToday = Set.empty }
-    let statement = operations.Transactions |> Array.fold applyTransaction statement
-    let statement = { statement with PositionsActiveToday = statement.PositionsActiveToday |> Set.map (mapEndOfDayValues statement.Date) }
+    let intermediate = { intermediate with Date  = operations.Date }
+    let intermediate = { intermediate with Stops = operations.Stoplosses |> Array.fold updateStop intermediate.Stops }
+    let intermediate = { intermediate with PositionsClosedPrior = appendPrev intermediate }
+    let intermediate = { intermediate with PositionsClosedToday = Set.empty }
+    let intermediate = operations.Transactions |> Array.fold applyTransaction intermediate
+    let intermediate = { intermediate with PositionsActiveToday = intermediate.PositionsActiveToday |> Set.map (mapEndOfDayValues intermediate.Date) }
 
-    statement
+    intermediate
