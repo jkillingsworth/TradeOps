@@ -21,7 +21,6 @@
       <th class="detail">Direction</th>
       <th class="detail">Shares</th>
       <th class="detail">Basis</th>
-      <th class="spacer"></th>
       <th class="detail">Close</th>
       <th class="detail">Upper</th>
       <th class="detail">Lower</th>
@@ -37,7 +36,6 @@
       <td class="detail">@item.Direction</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
-      <td class="spacer"></td>
       <td class="detail">@String.Format("{0:n4}", @item.Close)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Upper)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Lower)</td>
@@ -57,7 +55,6 @@
       <th class="detail">Direction</th>
       <th class="detail">Shares</th>
       <th class="detail">Basis</th>
-      <th class="spacer"></th>
       <th class="detail">Close</th>
       <th class="detail">Upper</th>
       <th class="detail">Lower</th>
@@ -73,7 +70,6 @@
       <td class="detail">@item.Direction</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
-      <td class="spacer"></td>
       <td class="detail">@String.Format("{0:n4}", @item.Close)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Upper)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Lower)</td>
@@ -93,7 +89,6 @@
       <th class="detail">Direction</th>
       <th class="detail">Shares</th>
       <th class="detail">Basis</th>
-      <th class="spacer"></th>
       <th class="detail">Close</th>
     </tr>
     @foreach (var item in @Model.PositionsClosedPrior)
@@ -106,7 +101,6 @@
       <td class="detail">@item.Direction</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
-      <td class="spacer"></td>
       <td class="detail">@String.Format("{0:n4}", @item.Close)</td>
     </tr>
     }

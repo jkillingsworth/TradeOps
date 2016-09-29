@@ -10,12 +10,6 @@ th.header, th.detail
     width: 10em;
 }
 
-th.spacer
-{
-    background-color: transparent;
-    width: 1em;
-}
-
 tr > .header
 {
     text-align: left;
