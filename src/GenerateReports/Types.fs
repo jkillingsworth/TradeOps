@@ -78,7 +78,7 @@ module Statement =
           Direction            : Direction
           Shares               : int
           Basis                : decimal
-          Close                : decimal
+          Final                : decimal
           Upper                : decimal
           Lower                : decimal
           Delta                : decimal }
@@ -91,7 +91,7 @@ module Statement =
           Direction            : Direction
           Shares               : int
           Basis                : decimal
-          Close                : decimal
+          Final                : decimal
           Upper                : decimal
           Lower                : decimal
           Delta                : decimal }
@@ -104,7 +104,7 @@ module Statement =
           Direction            : Direction
           Shares               : int
           Basis                : decimal
-          Close                : decimal }
+          Final                : decimal }
 
     type Model =
         { Date                 : DateTime

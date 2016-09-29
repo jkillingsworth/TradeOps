@@ -14,7 +14,7 @@ type PositionActiveToday =
       Direction       : string
       Shares          : int
       Basis           : decimal
-      Close           : decimal
+      Final           : decimal
       Upper           : decimal
       Lower           : decimal
       Delta           : decimal }
@@ -28,7 +28,7 @@ type PositionClosedToday =
       Direction       : string
       Shares          : int
       Basis           : decimal
-      Close           : decimal
+      Final           : decimal
       Upper           : decimal
       Lower           : decimal
       Delta           : decimal }
@@ -42,7 +42,7 @@ type PositionClosedPrior =
       Direction       : string
       Shares          : int
       Basis           : decimal
-      Close           : decimal }
+      Final           : decimal }
 
 type Model =
     { PositionsActiveToday : PositionActiveToday[]
@@ -62,7 +62,7 @@ let render (statement : Statement.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
-          Close           = item.Close
+          Final           = item.Final
           Upper           = item.Upper
           Lower           = item.Lower
           Delta           = item.Delta }
@@ -77,7 +77,7 @@ let render (statement : Statement.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
-          Close           = item.Close
+          Final           = item.Final
           Upper           = item.Upper
           Lower           = item.Lower
           Delta           = item.Delta }
@@ -92,7 +92,7 @@ let render (statement : Statement.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
-          Close           = item.Close }
+          Final           = item.Final }
 
     let positionsActiveToday =
         statement.PositionsActiveToday

@@ -84,7 +84,7 @@ let private processTradeOpening (statement : Statement.Model) (trade : Transacti
           Direction    = trade.Direction
           Shares       = trade.Shares
           Basis        = trade.Price
-          Close        = trade.Price
+          Final        = trade.Price
           Upper        = trade.Price
           Lower        = trade.Price
           Delta        = Decimal.Zero }
@@ -128,10 +128,10 @@ let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade)
                   Direction       = trade.Direction
                   Shares          = min shares positionSubject.Shares
                   Basis           = positionSubject.Basis
-                  Close           = trade.Price
+                  Final           = trade.Price
                   Upper           = computeUpper quote
                   Lower           = computeLower quote
-                  Delta           = trade.Price - positionSubject.Close }
+                  Delta           = trade.Price - positionSubject.Final }
 
             let positionsClosed = positionsClosed |> Set.add positionClosed
             let positionsActive = positionsActive |> Set.remove positionSubject
@@ -178,18 +178,18 @@ let mapClosedTodayToClosedPrior (positionClosedToday : Statement.PositionClosedT
       Direction       = positionClosedToday.Direction
       Shares          = positionClosedToday.Shares
       Basis           = positionClosedToday.Basis
-      Close           = positionClosedToday.Close }
+      Final           = positionClosedToday.Final }
 
-let mapClosePrice date (positionActiveToday : Statement.PositionActiveToday) =
+let mapEndOfDayValues date (positionActiveToday : Statement.PositionActiveToday) =
 
     let quote = Persistence.selectQuote positionActiveToday.IssueId date
-    let close = quote.Close
+    let final = quote.Close
     let upper = quote.Hi
     let lower = quote.Lo
-    let delta = close - positionActiveToday.Close
+    let delta = quote.Close - positionActiveToday.Final
 
     { positionActiveToday with
-        Close = close
+        Final = final
         Upper = upper
         Lower = lower
         Delta = delta }
@@ -207,6 +207,6 @@ let computeStatement (statement : Statement.Model) operations : Statement.Model 
     let statement = { statement with PositionsClosedPrior = appendPrev statement }
     let statement = { statement with PositionsClosedToday = Set.empty }
     let statement = operations.Transactions |> Array.fold applyTransaction statement
-    let statement = { statement with PositionsActiveToday = statement.PositionsActiveToday |> Set.map (mapClosePrice statement.Date) }
+    let statement = { statement with PositionsActiveToday = statement.PositionsActiveToday |> Set.map (mapEndOfDayValues statement.Date) }
 
     statement
