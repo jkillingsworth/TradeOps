@@ -84,7 +84,8 @@ let private processTradeOpening (statement : Statement.Model) (trade : Transacti
           Direction    = trade.Direction
           Shares       = trade.Shares
           Basis        = trade.Price
-          Close        = trade.Price }
+          Close        = trade.Price
+          Delta        = Decimal.Zero }
 
     { statement with
         PositionsActiveToday = statement.PositionsActiveToday |> Set.add positionActive }
@@ -113,7 +114,8 @@ let processTradeClosing (statement : Statement.Model) (trade : TransactionTrade)
                   Direction       = trade.Direction
                   Shares          = min shares positionSubject.Shares
                   Basis           = positionSubject.Basis
-                  Close           = trade.Price }
+                  Close           = trade.Price
+                  Delta           = trade.Price - positionSubject.Close }
 
             let positionsClosed = positionsClosed |> Set.add positionClosed
             let positionsActive = positionsActive |> Set.remove positionSubject
@@ -165,7 +167,12 @@ let mapClosedTodayToClosedPrior (positionClosedToday : Statement.PositionClosedT
 let mapClosePrice date (positionActiveToday : Statement.PositionActiveToday) =
 
     let quote = Persistence.selectQuote positionActiveToday.IssueId date
-    { positionActiveToday with Close = quote.Close }
+    let close = quote.Close
+    let delta = close - positionActiveToday.Close
+
+    { positionActiveToday with
+        Close = close
+        Delta = delta }
 
 let computeStatement (statement : Statement.Model) operations : Statement.Model =
 

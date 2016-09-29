@@ -14,7 +14,8 @@ type PositionActiveToday =
       Direction       : string
       Shares          : int
       Basis           : decimal
-      Close           : decimal }
+      Close           : decimal
+      Delta           : decimal }
 
 type PositionClosedToday =
     { Reference       : int
@@ -25,7 +26,8 @@ type PositionClosedToday =
       Direction       : string
       Shares          : int
       Basis           : decimal
-      Close           : decimal }
+      Close           : decimal
+      Delta           : decimal }
 
 type PositionClosedPrior =
     { Reference       : int
@@ -56,7 +58,8 @@ let render (statement : Statement.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
-          Close           = item.Close }
+          Close           = item.Close
+          Delta           = item.Delta }
 
     let mapPositionsClosedToday (item : Statement.PositionClosedToday) : PositionClosedToday =
 
@@ -68,7 +71,8 @@ let render (statement : Statement.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
-          Close           = item.Close }
+          Close           = item.Close
+          Delta           = item.Delta }
 
     let mapPositionsClosedPrior (item : Statement.PositionClosedPrior) : PositionClosedPrior =
 

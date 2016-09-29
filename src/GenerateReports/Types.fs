@@ -76,7 +76,8 @@ module Statement =
           Direction            : Direction
           Shares               : int
           Basis                : decimal
-          Close                : decimal }
+          Close                : decimal
+          Delta                : decimal }
 
     type PositionClosedToday =
         { Reference            : int
@@ -86,7 +87,8 @@ module Statement =
           Direction            : Direction
           Shares               : int
           Basis                : decimal
-          Close                : decimal }
+          Close                : decimal
+          Delta                : decimal }
 
     type PositionClosedPrior =
         { Reference            : int
