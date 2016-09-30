@@ -14,16 +14,6 @@ let mapSequence = function
     | Split transaction -> transaction.Sequence
     | Trade transaction -> transaction.Sequence
 
-let mapDate = function
-    | Divid transaction -> transaction.Date
-    | Split transaction -> transaction.Date
-    | Trade transaction -> transaction.Date
-
-let mapIssueId = function
-    | Divid transaction -> transaction.IssueId
-    | Split transaction -> transaction.IssueId
-    | Trade transaction -> transaction.IssueId
-
 let mapTicker issueId =
     let issue = issues |> Array.find (fun x -> x.IssueId = issueId)
     issue.Ticker
