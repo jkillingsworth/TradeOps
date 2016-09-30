@@ -87,52 +87,53 @@ let private processTradeClosing (intermediate : Model) (trade : TransactionTrade
         | Bearish, stop -> quote.Lo
         | Bullish, stop -> quote.Lo |> max stop |> min trade.Price
 
-    let rec loop (intermediate : Model) = function
+    let updatePositions intermediate shares =
+
+        let quote = Persistence.selectQuote trade.IssueId intermediate.Date
+
+        let positionsActive = intermediate.PositionsActiveToday
+        let positionsClosed = intermediate.PositionsClosedToday
+
+        let positionToClose =
+            intermediate.PositionsActiveToday
+            |> Seq.sortBy (fun x -> x.Sequence)
+            |> Seq.filter (fun x -> x.IssueId = trade.IssueId)
+            |> Seq.filter (fun x -> x.Direction = trade.Direction)
+            |> Seq.head
+
+        let positionClosed : PositionClosedToday =
+
+            { Reference = positionToClose.Sequence
+              Sequence  = trade.Sequence
+              Date      = trade.Date
+              IssueId   = trade.IssueId
+              Direction = trade.Direction
+              Shares    = min shares positionToClose.Shares
+              Basis     = positionToClose.Basis
+              Final     = trade.Price
+              Upper     = computeUpper quote
+              Lower     = computeLower quote
+              Delta     = trade.Price - positionToClose.Final }
+
+        let reinstateIfSharesRemaining positionsActive =
+            if (positionToClose.Shares > shares) then
+                positionsActive |> Set.add { positionToClose with Shares = positionToClose.Shares - shares }
+            else
+                positionsActive
+
+        let positionsClosed = positionsClosed |> Set.add positionClosed
+        let positionsActive =
+            positionsActive
+            |> Set.remove positionToClose
+            |> reinstateIfSharesRemaining
+
+        { intermediate with
+            PositionsActiveToday = positionsActive
+            PositionsClosedToday = positionsClosed }, (shares - positionClosed.Shares)
+
+    let rec loop intermediate = function
         | shares when shares = 0 -> intermediate
-        | shares
-            ->
-            let quote = Persistence.selectQuote trade.IssueId intermediate.Date
-
-            let positionsActive = intermediate.PositionsActiveToday
-            let positionsClosed = intermediate.PositionsClosedToday
-
-            let positionSubject =
-                intermediate.PositionsActiveToday
-                |> Seq.sortBy (fun x -> x.Sequence)
-                |> Seq.filter (fun x -> x.IssueId = trade.IssueId)
-                |> Seq.filter (fun x -> x.Direction = trade.Direction)
-                |> Seq.head
-
-            let positionClosed : PositionClosedToday =
-
-                { Reference = positionSubject.Sequence
-                  Sequence  = trade.Sequence
-                  Date      = trade.Date
-                  IssueId   = trade.IssueId
-                  Direction = trade.Direction
-                  Shares    = min shares positionSubject.Shares
-                  Basis     = positionSubject.Basis
-                  Final     = trade.Price
-                  Upper     = computeUpper quote
-                  Lower     = computeLower quote
-                  Delta     = trade.Price - positionSubject.Final }
-
-            let positionsClosed = positionsClosed |> Set.add positionClosed
-            let positionsActive = positionsActive |> Set.remove positionSubject
-
-            let intermediate =
-                if positionSubject.Shares > shares then
-                    let positionSubject = { positionSubject with Shares = positionSubject.Shares - shares }
-                    let positionsActive = positionsActive |> Set.add positionSubject
-                    { intermediate with
-                        PositionsActiveToday = positionsActive
-                        PositionsClosedToday = positionsClosed }
-                else
-                    { intermediate with
-                        PositionsActiveToday = positionsActive
-                        PositionsClosedToday = positionsClosed }
-
-            loop intermediate (shares - positionClosed.Shares)
+        | shares -> updatePositions intermediate shares ||> loop
 
     loop intermediate trade.Shares
 
