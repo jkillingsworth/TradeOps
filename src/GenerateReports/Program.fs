@@ -12,7 +12,7 @@ let generateReports dateFinal =
 
     let intermediates =
         dateFinal
-        |> Processing.generateDates
+        |> Date.generateDates
         |> Observable.map Processing.getAdjustments
         |> Observable.scanInit Intermediate.empty Processing.computeIntermediate
         |> Observable.publish
@@ -52,5 +52,5 @@ let main = function
         0
 
     | _ ->
-        generateReports <| DateTime.Now
+        generateReports <| Date.getMaximumDate()
         0
