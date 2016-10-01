@@ -1,3 +1,3 @@
 ## Overview
 
-This is a collection of portfolio management tools.
+This is a portfolio management tool for generating reports.
