@@ -9,6 +9,7 @@ open TradeOps.Processing
 
 type PositionActiveToday =
     { Sequence             : int
+      AccountId            : int
       Date                 : DateTime
       IssueId              : int
       Ticker               : string
@@ -25,6 +26,7 @@ type PositionActiveToday =
 type PositionClosedToday =
     { Reference            : int
       Sequence             : int
+      AccountId            : int
       Date                 : DateTime
       IssueId              : int
       Ticker               : string
@@ -41,6 +43,7 @@ type PositionClosedToday =
 type PositionClosedPrior =
     { Reference            : int
       Sequence             : int
+      AccountId            : int
       Date                 : DateTime
       IssueId              : int
       Ticker               : string
@@ -62,6 +65,7 @@ let render (intermediate : Intermediate.Model) =
     let mapPositionsActiveToday (item : Intermediate.PositionActiveToday) : PositionActiveToday =
 
         { Sequence        = item.Sequence
+          AccountId       = item.AccountId
           Date            = item.Date
           IssueId         = item.IssueId
           Ticker          = item.IssueId |> mapTicker
@@ -79,6 +83,7 @@ let render (intermediate : Intermediate.Model) =
 
         { Reference       = item.Reference
           Sequence        = item.Sequence
+          AccountId       = item.AccountId
           Date            = item.Date
           IssueId         = item.IssueId
           Ticker          = item.IssueId |> mapTicker
@@ -96,6 +101,7 @@ let render (intermediate : Intermediate.Model) =
 
         { Reference       = item.Reference
           Sequence        = item.Sequence
+          AccountId       = item.AccountId
           Date            = item.Date
           IssueId         = item.IssueId
           Ticker          = item.IssueId |> mapTicker

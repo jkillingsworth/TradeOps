@@ -7,6 +7,7 @@ open TradeOps.Types
 
 type PositionActiveToday =
     { Sequence             : int
+      AccountId            : int
       Date                 : DateTime
       IssueId              : int
       Direction            : Direction
@@ -22,6 +23,7 @@ type PositionActiveToday =
 type PositionClosedToday =
     { Reference            : int
       Sequence             : int
+      AccountId            : int
       Date                 : DateTime
       IssueId              : int
       Direction            : Direction
@@ -37,6 +39,7 @@ type PositionClosedToday =
 type PositionClosedPrior =
     { Reference            : int
       Sequence             : int
+      AccountId            : int
       Date                 : DateTime
       IssueId              : int
       Direction            : Direction
@@ -68,6 +71,7 @@ let private processTradeOpening (intermediate : Model) (trade : TransactionTrade
     let positionActive : PositionActiveToday =
 
         { Sequence   = trade.Sequence
+          AccountId  = trade.AccountId
           Date       = trade.Date
           IssueId    = trade.IssueId
           Direction  = trade.Direction
@@ -104,6 +108,7 @@ let private processTradeClosing (intermediate : Model) (trade : TransactionTrade
         let positionToClose =
             intermediate.PositionsActiveToday
             |> Seq.sortBy (fun x -> x.Sequence)
+            |> Seq.filter (fun x -> x.AccountId = trade.AccountId)
             |> Seq.filter (fun x -> x.IssueId = trade.IssueId)
             |> Seq.filter (fun x -> x.Direction = trade.Direction)
             |> Seq.head
@@ -112,6 +117,7 @@ let private processTradeClosing (intermediate : Model) (trade : TransactionTrade
 
             { Reference  = positionToClose.Sequence
               Sequence   = trade.Sequence
+              AccountId  = trade.AccountId
               Date       = trade.Date
               IssueId    = trade.IssueId
               Direction  = trade.Direction
@@ -166,6 +172,7 @@ let private processDivid (intermediate : Model) (divid : TransactionDivid) =
 
     let positionsActive =
         intermediate.PositionsActiveToday
+        |> Seq.filter (fun x -> x.AccountId = divid.AccountId)
         |> Seq.filter (fun x -> x.IssueId = divid.IssueId)
         |> Seq.filter (fun x -> x.Direction = divid.Direction)
         |> Seq.fold folder intermediate.PositionsActiveToday
@@ -202,6 +209,7 @@ let private processSplit (intermediate : Model) (split : TransactionSplit) =
 
     let positionsActive =
         intermediate.PositionsActiveToday
+        |> Seq.filter (fun x -> x.AccountId = split.AccountId)
         |> Seq.filter (fun x -> x.IssueId = split.IssueId)
         |> Seq.filter (fun x -> x.Direction = split.Direction)
         |> Seq.fold folder intermediate.PositionsActiveToday
@@ -233,6 +241,7 @@ let beginDay (adjustments : Adjustments) (intermediate : Model) =
 
         { Reference = positionClosedToday.Reference
           Sequence  = positionClosedToday.Sequence
+          AccountId = positionClosedToday.AccountId
           Date      = positionClosedToday.Date
           IssueId   = positionClosedToday.IssueId
           Direction = positionClosedToday.Direction

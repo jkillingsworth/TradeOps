@@ -142,13 +142,14 @@ module private SelectTransactionsDivid =
             | "Bearish" -> Bearish
             | erroneous -> failwith ("Invalid direction type: " + erroneous)
 
-        { Sequence = record.Sequence
-          Date     = record.Date
-          IssueId  = record.IssueId
+        { Sequence  = record.Sequence
+          AccountId = record.AccountId
+          Date      = record.Date
+          IssueId   = record.IssueId
           Direction = record.Direction |> mapDirection
-          Shares   = record.Shares
-          Amount   = record.Amount
-          PayDate  = record.PayDate }
+          Shares    = record.Shares
+          Amount    = record.Amount
+          PayDate   = record.PayDate }
 
     let execute date =
         use command = new CommandProvider()
@@ -178,6 +179,7 @@ module private SelectTransactionsSplit =
             | erroneous -> failwith ("Invalid direction type: " + erroneous)
 
         { Sequence  = record.Sequence
+          AccountId = record.AccountId
           Date      = record.Date
           IssueId   = record.IssueId
           Direction = record.Direction |> mapDirection
@@ -218,6 +220,7 @@ module private SelectTransactionsTrade =
             | erroneous -> failwith ("Invalid operation type: " + erroneous)
 
         { Sequence  = record.Sequence
+          AccountId = record.AccountId
           Date      = record.Date
           IssueId   = record.IssueId
           Direction = record.Direction |> mapDirection

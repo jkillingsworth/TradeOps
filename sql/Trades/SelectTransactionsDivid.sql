@@ -1,5 +1,6 @@
 ﻿select
     [transaction].[Sequence]  as [Sequence],
+    [transaction].[AccountId] as [AccountId],
     [transaction].[Date]      as [Date],
     [transaction].[IssueId]   as [IssueId],
     [transaction].[Direction] as [Direction],

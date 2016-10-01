@@ -25,6 +25,7 @@ type Operation =
 
 type TransactionDivid =
     { Sequence  : int
+      AccountId : int
       Date      : DateTime
       IssueId   : int
       Direction : Direction
@@ -34,6 +35,7 @@ type TransactionDivid =
 
 type TransactionSplit =
     { Sequence  : int
+      AccountId : int
       Date      : DateTime
       IssueId   : int
       Direction : Direction
@@ -43,6 +45,7 @@ type TransactionSplit =
 
 type TransactionTrade =
     { Sequence  : int
+      AccountId : int
       Date      : DateTime
       IssueId   : int
       Direction : Direction
