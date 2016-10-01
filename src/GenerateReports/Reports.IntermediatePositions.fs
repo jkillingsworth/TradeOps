@@ -15,10 +15,12 @@ type PositionActiveToday =
       Direction            : string
       Shares               : int
       Basis                : decimal
+      Divid                : decimal
       Final                : decimal
       Upper                : decimal
       Lower                : decimal
-      Delta                : decimal }
+      DeltaDivid           : decimal
+      DeltaFinal           : decimal }
 
 type PositionClosedToday =
     { Reference            : int
@@ -29,10 +31,12 @@ type PositionClosedToday =
       Direction            : string
       Shares               : int
       Basis                : decimal
+      Divid                : decimal
       Final                : decimal
       Upper                : decimal
       Lower                : decimal
-      Delta                : decimal }
+      DeltaDivid           : decimal
+      DeltaFinal           : decimal }
 
 type PositionClosedPrior =
     { Reference            : int
@@ -43,6 +47,7 @@ type PositionClosedPrior =
       Direction            : string
       Shares               : int
       Basis                : decimal
+      Divid                : decimal
       Final                : decimal }
 
 type Model =
@@ -63,10 +68,12 @@ let render (intermediate : Intermediate.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
+          Divid           = item.Divid
           Final           = item.Final
           Upper           = item.Upper
           Lower           = item.Lower
-          Delta           = item.Delta }
+          DeltaDivid      = item.DeltaDivid
+          DeltaFinal      = item.DeltaFinal }
 
     let mapPositionsClosedToday (item : Intermediate.PositionClosedToday) : PositionClosedToday =
 
@@ -78,10 +85,12 @@ let render (intermediate : Intermediate.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
+          Divid           = item.Divid
           Final           = item.Final
           Upper           = item.Upper
           Lower           = item.Lower
-          Delta           = item.Delta }
+          DeltaDivid      = item.DeltaDivid
+          DeltaFinal      = item.DeltaFinal }
 
     let mapPositionsClosedPrior (item : Intermediate.PositionClosedPrior) : PositionClosedPrior =
 
@@ -93,6 +102,7 @@ let render (intermediate : Intermediate.Model) =
           Direction       = item.Direction |> sprintf "%A"
           Shares          = item.Shares
           Basis           = item.Basis
+          Divid           = item.Divid
           Final           = item.Final }
 
     let positionsActiveToday =

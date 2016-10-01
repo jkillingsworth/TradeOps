@@ -21,10 +21,12 @@
       <th class="detail">Direction</th>
       <th class="detail">Shares</th>
       <th class="detail">Basis</th>
+      <th class="detail">Divid</th>
       <th class="detail">Final</th>
       <th class="detail">Upper</th>
       <th class="detail">Lower</th>
-      <th class="detail">Delta</th>
+      <th class="detail">DeltaDivid</th>
+      <th class="detail">DeltaFinal</th>
     </tr>
     @foreach (var item in @Model.PositionsActiveToday)
     {
@@ -36,10 +38,12 @@
       <td class="detail">@item.Direction</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Divid)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Final)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Upper)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Lower)</td>
-      <td class="detail">@String.Format("{0:+0.0000;-0.0000;0.0000}", @item.Delta)</td>
+      <td class="detail">@String.Format("{0:+0.0000;-0.0000;0.0000}", @item.DeltaDivid)</td>
+      <td class="detail">@String.Format("{0:+0.0000;-0.0000;0.0000}", @item.DeltaFinal)</td>
     </tr>
     }
   </table>
@@ -55,10 +59,12 @@
       <th class="detail">Direction</th>
       <th class="detail">Shares</th>
       <th class="detail">Basis</th>
+      <th class="detail">Divid</th>
       <th class="detail">Final</th>
       <th class="detail">Upper</th>
       <th class="detail">Lower</th>
-      <th class="detail">Delta</th>
+      <th class="detail">DeltaDivid</th>
+      <th class="detail">DeltaFinal</th>
     </tr>
     @foreach (var item in @Model.PositionsClosedToday)
     {
@@ -70,10 +76,12 @@
       <td class="detail">@item.Direction</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Divid)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Final)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Upper)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Lower)</td>
-      <td class="detail">@String.Format("{0:+0.0000;-0.0000;0.0000}", @item.Delta)</td>
+      <td class="detail">@String.Format("{0:+0.0000;-0.0000;0.0000}", @item.DeltaDivid)</td>
+      <td class="detail">@String.Format("{0:+0.0000;-0.0000;0.0000}", @item.DeltaFinal)</td>
     </tr>
     }
   </table>
@@ -89,6 +97,7 @@
       <th class="detail">Direction</th>
       <th class="detail">Shares</th>
       <th class="detail">Basis</th>
+      <th class="detail">Divid</th>
       <th class="detail">Final</th>
     </tr>
     @foreach (var item in @Model.PositionsClosedPrior)
@@ -101,6 +110,7 @@
       <td class="detail">@item.Direction</td>
       <td class="detail">@String.Format("{0}", @item.Shares)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Basis)</td>
+      <td class="detail">@String.Format("{0:n4}", @item.Divid)</td>
       <td class="detail">@String.Format("{0:n4}", @item.Final)</td>
     </tr>
     }

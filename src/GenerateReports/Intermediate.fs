@@ -12,10 +12,12 @@ type PositionActiveToday =
       Direction            : Direction
       Shares               : int
       Basis                : decimal
+      Divid                : decimal
       Final                : decimal
       Upper                : decimal
       Lower                : decimal
-      Delta                : decimal }
+      DeltaDivid           : decimal
+      DeltaFinal           : decimal }
 
 type PositionClosedToday =
     { Reference            : int
@@ -25,10 +27,12 @@ type PositionClosedToday =
       Direction            : Direction
       Shares               : int
       Basis                : decimal
+      Divid                : decimal
       Final                : decimal
       Upper                : decimal
       Lower                : decimal
-      Delta                : decimal }
+      DeltaDivid           : decimal
+      DeltaFinal           : decimal }
 
 type PositionClosedPrior =
     { Reference            : int
@@ -38,6 +42,7 @@ type PositionClosedPrior =
       Direction            : Direction
       Shares               : int
       Basis                : decimal
+      Divid                : decimal
       Final                : decimal }
 
 type Model =
@@ -62,16 +67,18 @@ let private processTradeOpening (intermediate : Model) (trade : TransactionTrade
 
     let positionActive : PositionActiveToday =
 
-        { Sequence  = trade.Sequence
-          Date      = trade.Date
-          IssueId   = trade.IssueId
-          Direction = trade.Direction
-          Shares    = trade.Shares
-          Basis     = trade.Price
-          Final     = trade.Price
-          Upper     = trade.Price
-          Lower     = trade.Price
-          Delta     = Decimal.Zero }
+        { Sequence   = trade.Sequence
+          Date       = trade.Date
+          IssueId    = trade.IssueId
+          Direction  = trade.Direction
+          Shares     = trade.Shares
+          Basis      = trade.Price
+          Divid      = Decimal.Zero
+          Final      = trade.Price
+          Upper      = trade.Price
+          Lower      = trade.Price
+          DeltaDivid = Decimal.Zero
+          DeltaFinal = Decimal.Zero }
 
     { intermediate with PositionsActiveToday = intermediate.PositionsActiveToday |> Set.add positionActive }
 
@@ -103,17 +110,19 @@ let private processTradeClosing (intermediate : Model) (trade : TransactionTrade
 
         let positionClosed : PositionClosedToday =
 
-            { Reference = positionToClose.Sequence
-              Sequence  = trade.Sequence
-              Date      = trade.Date
-              IssueId   = trade.IssueId
-              Direction = trade.Direction
-              Shares    = min shares positionToClose.Shares
-              Basis     = positionToClose.Basis
-              Final     = trade.Price
-              Upper     = computeUpper quote
-              Lower     = computeLower quote
-              Delta     = trade.Price - positionToClose.Final }
+            { Reference  = positionToClose.Sequence
+              Sequence   = trade.Sequence
+              Date       = trade.Date
+              IssueId    = trade.IssueId
+              Direction  = trade.Direction
+              Shares     = min shares positionToClose.Shares
+              Basis      = positionToClose.Basis
+              Divid      = positionToClose.Divid
+              Final      = trade.Price
+              Upper      = computeUpper quote
+              Lower      = computeLower quote
+              DeltaDivid = positionToClose.DeltaDivid
+              DeltaFinal = trade.Price - positionToClose.Final }
 
         let reinstateIfSharesRemaining positionsActive =
             if (positionToClose.Shares > shares) then
@@ -141,11 +150,63 @@ let private processTradeClosing (intermediate : Model) (trade : TransactionTrade
 
 let private processDivid (intermediate : Model) (divid : TransactionDivid) =
 
-    intermediate
+    let adjustAmount value =
+        value + divid.Amount
+
+    let apply (position : PositionActiveToday) =
+        { position with
+            Divid = adjustAmount position.Divid
+            DeltaDivid = adjustAmount position.DeltaDivid }
+
+    let folder positionsActiveToday positionToApply =
+        let positionsActiveToday = (positionToApply, positionsActiveToday) ||> Set.remove
+        let positionToApply = apply positionToApply
+        let positionsActiveToday = (positionToApply, positionsActiveToday) ||> Set.add
+        positionsActiveToday
+
+    let positionsActive =
+        intermediate.PositionsActiveToday
+        |> Seq.filter (fun x -> x.IssueId = divid.IssueId)
+        |> Seq.filter (fun x -> x.Direction = divid.Direction)
+        |> Seq.fold folder intermediate.PositionsActiveToday
+
+    { intermediate with PositionsActiveToday = positionsActive }
 
 let private processSplit (intermediate : Model) (split : TransactionSplit) =
 
-    intermediate
+    let adjustShares (value : int) =
+        let ratio = decimal split.New / decimal split.Old
+        let value = ratio * decimal value
+        int value
+
+    let adjustAmount (value : decimal) =
+        let ratio = decimal split.Old / decimal split.New
+        ratio * value
+
+    let apply (position : PositionActiveToday) =
+        { position with
+            Shares = adjustShares position.Shares
+            Basis = adjustAmount position.Basis
+            Divid = adjustAmount position.Divid
+            Final = adjustAmount position.Final
+            Upper = adjustAmount position.Upper
+            Lower = adjustAmount position.Lower
+            DeltaDivid = adjustAmount position.DeltaDivid
+            DeltaFinal = adjustAmount position.DeltaFinal }
+
+    let folder positionsActiveToday positionToApply =
+        let positionsActiveToday = (positionToApply, positionsActiveToday) ||> Set.remove
+        let positionToApply = apply positionToApply
+        let positionsActiveToday = (positionToApply, positionsActiveToday) ||> Set.add
+        positionsActiveToday
+
+    let positionsActive =
+        intermediate.PositionsActiveToday
+        |> Seq.filter (fun x -> x.IssueId = split.IssueId)
+        |> Seq.filter (fun x -> x.Direction = split.Direction)
+        |> Seq.fold folder intermediate.PositionsActiveToday
+
+    { intermediate with PositionsActiveToday = positionsActive }
 
 let private processTrade (intermediate : Model) (trade : TransactionTrade) =
 
@@ -162,7 +223,13 @@ let private processTransaction (intermediate : Model) = function
 
 let beginDay (adjustments : Adjustments) (intermediate : Model) =
 
-    let mapping (positionClosedToday : PositionClosedToday) =
+    let ofPositionsActiveToday (positionActiveToday : PositionActiveToday) =
+
+        { positionActiveToday with
+            DeltaDivid = Decimal.Zero
+            DeltaFinal = Decimal.Zero }
+
+    let ofPositionsClosedToday (positionClosedToday : PositionClosedToday) =
 
         { Reference = positionClosedToday.Reference
           Sequence  = positionClosedToday.Sequence
@@ -171,11 +238,17 @@ let beginDay (adjustments : Adjustments) (intermediate : Model) =
           Direction = positionClosedToday.Direction
           Shares    = positionClosedToday.Shares
           Basis     = positionClosedToday.Basis
+          Divid     = positionClosedToday.Divid
           Final     = positionClosedToday.Final }
 
+    let positionsActiveToday =
+        intermediate.PositionsActiveToday
+        |> Set.map ofPositionsActiveToday
+
+    let positionsClosedToday = Set.empty
     let positionsClosedPrior =
         intermediate.PositionsClosedToday
-        |> Set.map mapping
+        |> Set.map ofPositionsClosedToday
         |> Set.union intermediate.PositionsClosedPrior
 
     let adjustStops =
@@ -185,8 +258,9 @@ let beginDay (adjustments : Adjustments) (intermediate : Model) =
     { intermediate with
         Date  = adjustments.Date
         Stops = adjustments.Stoplosses |> adjustStops
-        PositionsClosedPrior = positionsClosedPrior
-        PositionsClosedToday = Set.empty }
+        PositionsActiveToday = positionsActiveToday
+        PositionsClosedToday = positionsClosedToday
+        PositionsClosedPrior = positionsClosedPrior }
 
 //-------------------------------------------------------------------------------------------------
 
@@ -207,15 +281,11 @@ let closeDay (adjustments : Adjustments) (intermediate : Model) =
     let mapping (positionActiveToday : PositionActiveToday) =
 
         let quote = Persistence.selectQuote positionActiveToday.IssueId intermediate.Date
-        let final = quote.Close
-        let upper = quote.Hi
-        let lower = quote.Lo
-        let delta = quote.Close - positionActiveToday.Final
 
         { positionActiveToday with
-            Final = final
-            Upper = upper
-            Lower = lower
-            Delta = delta }
+            Final      = quote.Close
+            Upper      = quote.Hi
+            Lower      = quote.Lo
+            DeltaFinal = quote.Close - positionActiveToday.Final }
 
     { intermediate with PositionsActiveToday = intermediate.PositionsActiveToday |> Set.map mapping }
