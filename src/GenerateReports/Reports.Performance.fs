@@ -10,7 +10,8 @@ type Summary =
     { Date  : DateTime
       Final : decimal
       Upper : decimal
-      Lower : decimal }
+      Lower : decimal
+      Stops : decimal }
 
 type Model =
     { Summaries : Summary[] }
@@ -73,6 +74,7 @@ let render model intermediate =
     let finalActiveToday = computeActiveToday intermediate (fun x -> x.Final)
     let upperActiveToday = computeActiveToday intermediate (fun x -> x.Upper)
     let lowerActiveToday = computeActiveToday intermediate (fun x -> x.Lower)
+    let stopsActiveToday = computeActiveToday intermediate (fun x -> intermediate.Stops.[x.IssueId])
 
     let finalClosedToday = computeClosedToday intermediate (fun x -> x.Final)
     let upperClosedToday = computeClosedToday intermediate (fun x -> x.Upper)
@@ -84,6 +86,7 @@ let render model intermediate =
         { Date  = intermediate.Date
           Final = finalActiveToday + finalClosedToday + finalClosedPrior
           Upper = upperActiveToday + upperClosedToday + finalClosedPrior
-          Lower = lowerActiveToday + lowerClosedToday + finalClosedPrior }
+          Lower = lowerActiveToday + lowerClosedToday + finalClosedPrior
+          Stops = stopsActiveToday + finalClosedToday + finalClosedPrior }
 
     { model with Summaries = Array.append model.Summaries [| summary |] }

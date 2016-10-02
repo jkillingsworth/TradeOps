@@ -1,5 +1,5 @@
-﻿Date, Final, Upper, Lower
+﻿Date, Final, Upper, Lower, Stops
 @foreach (var item in @Model.Summaries)
 {
-@String.Format("{0:d}, {1:0.0000}, {2:0.0000}, {3:0.0000}{4}", @item.Date, @item.Final, @item.Upper, @item.Lower, Environment.NewLine)
+@String.Format("{0:d}, {1:0.0000}, {2:0.0000}, {3:0.0000}, {4:0.0000}{5}", @item.Date, @item.Final, @item.Upper, @item.Lower, @item.Stops, Environment.NewLine)
 }
