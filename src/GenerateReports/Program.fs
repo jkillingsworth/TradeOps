@@ -35,6 +35,11 @@ let generateReports dateFinal =
         |> Observable.map IntermediatePositions.render
         |> Observable.subscribe Output.writeIntermediatePositions
 
+    use subscription =
+        intermediates
+        |> Observable.fold Performance.render Performance.empty
+        |> Observable.subscribe Output.writePerformance
+
     use connection =
         intermediates
         |> Observable.connect

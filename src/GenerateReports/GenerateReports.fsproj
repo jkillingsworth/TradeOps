@@ -69,6 +69,7 @@
     <EmbeddedResource Include="Templates\IntermediateTransactions.html" />
     <EmbeddedResource Include="Templates\IntermediateStops.html" />
     <EmbeddedResource Include="Templates\IntermediatePositions.html" />
+    <EmbeddedResource Include="Templates\Performance.csv" />
     <Compile Include="Types.fs" />
     <Compile Include="Persistence.fs" />
     <Compile Include="Date.fs" />
@@ -77,6 +78,7 @@
     <Compile Include="Reports.IntermediateTransactions.fs" />
     <Compile Include="Reports.IntermediateStops.fs" />
     <Compile Include="Reports.IntermediatePositions.fs" />
+    <Compile Include="Reports.Performance.fs" />
     <Compile Include="Output.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

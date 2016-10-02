@@ -52,3 +52,6 @@ let writeIntermediateStops (model : IntermediateStops.Model) =
 
 let writeIntermediatePositions (model : IntermediatePositions.Model) =
     write model "IntermediatePositions.html"
+
+let writePerformance (model : Performance.Model) =
+    write model "Performance.csv"
